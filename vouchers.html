@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Vouchers | Purple Sanctuary</title>
+    <style>
+        /* --- 1. UNIFIED DREAMY PALETTE --- */
+        :root {
+            --primary-purple: #9333ea;
+            --bg-top: #f5d0fe;
+            --bg-bottom: #701a75;
+            --text-main: #4a044e;
+            --text-light: #6b21a8;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. RESPONSIVE FLOATING NAVIGATION --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-top: 20px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; 
+            justify-content: center;
+            width: 85%;
+            max-width: 800px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover { color: var(--primary-purple); }
+
+        /* --- 3. MAIN LAYOUT --- */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 40px;
+            padding-bottom: 150px; 
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #581c87;
+            font-family: 'Georgia', serif; 
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        /* --- 4. VOUCHER STYLES --- */
+        .voucher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .voucher {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px dashed var(--primary-purple);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, opacity 0.5s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            overflow: hidden;
+        }
+
+        .voucher.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .voucher::before, .voucher::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30px;
+            height: 30px;
+            background: var(--bg-top);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            border: 2px dashed var(--primary-purple);
+        }
+
+        .voucher::before { left: -15px; border-left-color: transparent; border-top-color: transparent; border-bottom-color: transparent; }
+        .voucher::after { right: -15px; border-right-color: transparent; border-top-color: transparent; border-bottom-color: transparent; }
+
+        .voucher-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .voucher-title {
+            font-family: 'Georgia', serif;
+            font-size: 1.3rem;
+            color: var(--primary-purple);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .voucher-desc {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .redeem-btn {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .redeem-btn:hover {
+            background: var(--primary-purple);
+        }
+
+        .voucher.redeemed {
+            opacity: 0.6;
+            border-style: solid;
+            background: rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+        }
+
+        .voucher.redeemed .redeem-btn {
+            background: #aaa;
+            color: #fff;
+        }
+
+        /* --- 5. MODAL STYLES --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(74, 4, 78, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background: #fffafa; 
+            width: 85%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 35px 25px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            color: #4a044e;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active { opacity: 1; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h2 { font-family: 'Georgia', serif; color: #9333ea; margin-top: 0; border-bottom: 1px solid #e9d5ff; padding-bottom: 10px; font-size: 1.4rem; }
+        .modal-content p { line-height: 1.6; font-size: 1rem; font-style: italic; margin-bottom: 0; }
+        
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; color: #aaa; cursor: pointer; transition: 0.3s; }
+        .close-btn:hover { color: #9333ea; }
+
+        /* --- 6. MOBILE RESPONSIVENESS --- */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            nav { margin-top: 20px; padding: 12px 15px; }
+            .voucher-grid { grid-template-columns: 1fr; }
+            .voucher { padding: 25px 15px; }
+        }
+
+        /* --- 7. GARDEN CONTAINER --- */
+        .garden-container {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 45vh;
+            z-index: -1; pointer-events: none;
+            display: flex; align-items: flex-end;
+        }
+        @keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="story.html">Our Story</a>
+        <a href="music.html">Music</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="plans.html">Future</a>
+        <a href="open-when.html">Open When</a>
+        <a href="cycle.html">Cycle</a>
+        <a href="vouchers.html">Vouchers</a>
+        <a href="garden.html">The Garden</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Love Vouchers</h1>
+            <div class="subtitle">Redeemable anytime, anywhere my princess 🎟️</div>
+        </header>
+
+        <div class="voucher-grid">
+            
+            <div class="voucher">
+                <div class="voucher-icon">🧋</div>
+                <div class="voucher-title">Free Mang Chaa Date</div>
+                <div class="voucher-desc">Good for one free milk tea date at our favorite spot. I am paying baby.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'Mang Chaa Date')">Redeem</button>
+            </div>
+
+            <div class="voucher">
+                <div class="voucher-icon">🎮</div>
+                <div class="voucher-title">Mobile Legends Carry</div>
+                <div class="voucher-desc">I will play whatever role you want and follow your lead for one full hour cutie.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'ML Carry')">Redeem</button>
+            </div>
+
+            <div class="voucher">
+                <div class="voucher-icon">🤗</div>
+                <div class="voucher-title">Unlimited Cuddles</div>
+                <div class="voucher-desc">Valid for an endless supply of warm, tight hugs from me to my sweetie.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'Cuddles')">Redeem</button>
+            </div>
+
+            <div class="voucher">
+                <div class="voucher-icon">📞</div>
+                <div class="voucher-title">Late Night Sleep Call</div>
+                <div class="voucher-desc">Redeem this to keep me on the phone with you all night until you fall asleep lovey.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'Sleep Call')">Redeem</button>
+            </div>
+
+            <div class="voucher">
+                <div class="voucher-icon">🗣️</div>
+                <div class="voucher-title">Rant Pass</div>
+                <div class="voucher-desc">Use this when you are stressed. I will just listen to you vent without offering solutions, my precious.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'Rant Pass')">Redeem</button>
+            </div>
+
+            <div class="voucher">
+                <div class="voucher-icon">📸</div>
+                <div class="voucher-title">Personal Photographer</div>
+                <div class="voucher-desc">I will take as many pictures of you as you want until we get the perfect one darling.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'Photographer')">Redeem</button>
+            </div>
+
+            <div class="voucher">
+                <div class="voucher-icon">💆‍♀️</div>
+                <div class="voucher-title">Gentle Massage</div>
+                <div class="voucher-desc">Good for one relaxing massage to take away all your college stress sweetheart.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'Massage')">Redeem</button>
+            </div>
+
+            <div class="voucher">
+                <div class="voucher-icon">🍲</div>
+                <div class="voucher-title">My Cooking</div>
+                <div class="voucher-desc">I will cook you your favorite meal and do all the dishes afterward babe.</div>
+                <button class="redeem-btn" onclick="redeemVoucher(this, 'Cooking')">Redeem</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="redeemModal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">✖</span>
+            <h2>Voucher Redeemed 💜</h2>
+            <p id="redeem-text">Text me right now to claim this my solace.</p>
+        </div>
+    </div>
+
+    <div id="tulip-garden" class="garden-container"></div>
+
+    <script>
+        // --- 1. SCROLL ANIMATION ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, (index % 4) * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.voucher').forEach(card => {
+            observer.observe(card);
+        });
+
+        // --- 2. REDEEM LOGIC ---
+        const modal = document.getElementById('redeemModal');
+        const redeemText = document.getElementById('redeem-text');
+
+        function redeemVoucher(btn, voucherName) {
+            const card = btn.parentElement;
+            
+            // Visual change to show it is used
+            card.classList.add('redeemed');
+            btn.innerText = "Claimed ✔";
+
+            // Update and show modal
+            redeemText.innerText = `You just claimed the ${voucherName} voucher. Send me a message right now so I can give it to you my love.`;
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        // --- 3. GARDEN GENERATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const garden = document.getElementById('tulip-garden');
+            const tulipCount = 35; 
+            const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
+
+            for (let i = 0; i < tulipCount; i++) {
+                const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const randomX = Math.random() * 100;
+                const randomHeight = 120 + Math.random() * 180;
+                const randomDelay = Math.random() * -5;
+                const randomSpeed = 4 + Math.random() * 2;
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                tulip.setAttribute("viewBox", "0 0 50 150");
+                tulip.style.cssText = `
+                    position: absolute;
+                    bottom: -20px;
+                    left: ${randomX}%;
+                    height: ${randomHeight}px;
+                    z-index: ${Math.floor(randomHeight)};
+                    transform-origin: bottom center;
+                    animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
+                    filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
+                `;
+
+                tulip.innerHTML = `
+                    <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
+                    <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
+                    <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
+                `;
+                garden.appendChild(tulip);
+            }
+        });
+    </script>
+</body>
+</html>

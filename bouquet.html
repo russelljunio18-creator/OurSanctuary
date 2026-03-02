@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --deep-purple: #4a044e;
+            --soft-purple: #d8b4fe;
+            --tulip-color: #9333ea;
+            --stem-green: #4ade80;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom, #f5d0fe, #701a75);
+        }
+
+        /* The Garden Background */
+        .garden {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 5%;
+        }
+
+        .tulip-bg {
+            position: relative;
+            width: 40px;
+            height: 60px;
+            background: var(--tulip-color);
+            border-radius: 50% 50% 15% 15%;
+            box-shadow: inset -10px -10px 15px rgba(0,0,0,0.3);
+            animation: sway 4s ease-in-out infinite alternate;
+        }
+
+        .tulip-bg::before {
+            content: '';
+            position: absolute;
+            bottom: -150px;
+            left: 50%;
+            width: 4px;
+            height: 150px;
+            background: var(--stem-green);
+            z-index: -1;
+        }
+
+        @keyframes sway {
+            from { transform: rotate(-2deg); }
+            to { transform: rotate(2deg); }
+        }
+
+        /* Overlay Content */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            color: var(--deep-purple);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-title { font-weight: bold; font-size: 1.2rem; margin: 0; }
+        
+        .progress-container { margin: 15px 0; }
+        .progress-bar { height: 6px; background: rgba(0,0,0,0.1); border-radius: 3px; }
+        .progress-fill { height: 100%; background: #22c55e; border-radius: 3px; }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .icon-small {
+            width: 30px;
+            height: 25px;
+            background: var(--tulip-color);
+            border-radius: 50% 50% 20% 20%;
+        }
+
+        .spec-text { font-family: monospace; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="garden" id="garden"></div>
+
+<div class="content-wrapper">
+    <div class="container">
+        <div class="card">
+            <p class="card-title">M25 150 Qtuller</p>
+            <div class="progress-container">
+                <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+                <div class="spec-text" style="margin-top:5px">100% 5s ease-in-out</div>
+            </div>
+            <div class="row"><div class="icon-small"></div><div class="spec-text">Q5 48-30 Bo 10 Z</div></div>
+            <div class="row"><div class="icon-small"></div><div class="spec-text">Q5 61-30 Bo 40 Z</div></div>
+            <div class="row"><div class="icon-small"></div><div class="spec-text">Q5 46-30 Bo 10 Z</div></div>
+        </div>
+        </div>
+</div>
+
+<script>
+    // Script to populate the garden with many tulips
+    const garden = document.getElementById('garden');
+    for (let i = 0; i < 30; i++) {
+        const tulip = document.createElement('div');
+        tulip.className = 'tulip-bg';
+        tulip.style.left = Math.random() * 5 + 'px';
+        tulip.style.opacity = 0.4 + Math.random() * 0.6;
+        tulip.style.transform = `scale(${0.5 + Math.random()})`;
+        tulip.style.animationDelay = Math.random() * 2 + 's';
+        garden.appendChild(tulip);
+    }
+</script>
+
+</body>
+</html>

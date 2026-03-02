@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story | Purple Sanctuary</title>
+    <style>
+        /* --- 1. THE DREAMY PALETTE --- */
+        :root {
+            --primary-purple: #9333ea;
+            --bg-top: #f5d0fe;
+            --bg-bottom: #701a75;
+            --text-main: #4a044e;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. READING PROGRESS BAR --- */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 2000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-purple);
+            width: 0%;
+            box-shadow: 0 0 10px var(--primary-purple);
+            transition: width 0.1s ease;
+        }
+
+        /* --- 3. RESPONSIVE NAVIGATION --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-top: 20px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; 
+            justify-content: center;
+            width: 85%;
+            max-width: 700px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover { color: var(--primary-purple); }
+
+        /* --- 4. TIMELINE CONTAINER --- */
+        .story-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            margin-top: 40px;
+            padding-bottom: 150px; 
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 2s ease;
+        }
+
+        h1 { 
+            font-size: 3rem; 
+            margin-bottom: 10px; 
+            color: #581c87; 
+            font-family: 'Georgia', serif;
+        }
+
+        .subtitle { 
+            font-size: 1.2rem; 
+            font-style: italic; 
+            opacity: 0.8; 
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 20px; 
+            top: 180px; 
+            bottom: 200px; 
+            width: 4px;
+            background: rgba(147, 51, 234, 0.3);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        /* --- 5. CHAPTER CARDS --- */
+        .chapter {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            margin-left: 50px; 
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease;
+            opacity: 0; 
+            transform: translateY(40px);
+            z-index: 1;
+        }
+
+        .chapter.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chapter::before {
+            content: '';
+            position: absolute;
+            left: -43px; 
+            top: 40px;
+            width: 26px;
+            height: 26px;
+            background: var(--primary-purple);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(147, 51, 234, 0.5), inset 0 0 5px #fffafa;
+            border: 3px solid #f5d0fe;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #6b21a8;
+            font-family: 'Georgia', serif;
+            border-bottom: 2px solid rgba(147, 51, 234, 0.2);
+            padding-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        p {
+            line-height: 1.8;
+            font-size: 1.05rem;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+
+        /* --- 6. SECRET THOUGHTS (INTERACTIVE TEXT) --- */
+        .secret-word {
+            color: #6b21a8;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 1.5px dashed #6b21a8;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .secret-word:hover {
+            color: var(--primary-purple);
+            text-shadow: 0 0 5px rgba(147, 51, 234, 0.5);
+        }
+
+        /* The little tooltip bubble */
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text-main);
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+            position: absolute;
+            z-index: 100;
+            bottom: 150%; 
+            left: 50%;
+            margin-left: -100px; /* Center the tooltip */
+            font-size: 0.85rem;
+            font-weight: normal;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-family: 'Segoe UI', sans-serif;
+            pointer-events: none;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--text-main) transparent transparent transparent;
+        }
+
+        .secret-word.active .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* --- 7. TO BE CONTINUED SECTION --- */
+        .finale-box {
+            text-align: center;
+            margin-top: 60px;
+            margin-left: 50px;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px dashed var(--primary-purple);
+            cursor: pointer;
+            transition: 0.4s;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .finale-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .finale-box:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(1.02);
+        }
+
+        .finale-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .finale-text {
+            font-family: 'Georgia', serif;
+            font-size: 1.4rem;
+            color: var(--primary-purple);
+            font-weight: bold;
+        }
+
+        /* --- 8. MOBILE ADJUSTMENTS --- */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .timeline-line { left: 10px; }
+            .chapter, .finale-box { 
+                margin-left: 30px; 
+                padding: 25px 20px; 
+            }
+            .chapter::before { 
+                left: -31px; 
+                width: 20px; 
+                height: 20px; 
+                top: 30px; 
+            }
+            nav {
+                margin-top: 20px;
+                padding: 12px 15px;
+            }
+        }
+
+        /* --- 9. GARDEN CONTAINER --- */
+        .garden-container {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 40vh;
+            z-index: -1; pointer-events: none;
+            display: flex; align-items: flex-end;
+        }
+        @keyframes sway { 0% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } 100% { transform: rotate(-2deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="story.html">Our Story</a>
+        <a href="music.html">Music</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="plans.html">Future</a>
+        <a href="open-when.html">Open When</a>
+        <a href="cycle.html">Cycle</a>
+        <a href="garden.html">The Garden</a>
+    </nav>
+
+    <div class="story-container">
+        <div class="header-title">
+            <h1>Memories of Her</h1>
+            <div class="subtitle">From strangers to my entire world</div>
+            <p style="font-size: 0.9rem; margin-top:15px; opacity:0.7;">(Tap the highlighted words to see my secret thoughts baby)</p>
+        </div>
+
+        <div class="timeline-line"></div>
+
+        <div class="chapter">
+            <h2>The First Impressions</h2>
+            <p>Grade 8 she became my classmate, no interaction, no impression of her. Grade 9, I noticed her. She is miss vice mayor at that time, nothing more, nothing less.</p>
+            <p>At the start of Grade 10, first grading, she became my rival for being leader. Her name is Jilliane Remilliosa Corpuz. But I do not want to become one so I do not really give effort to it. I already knew she would become a better leader than me. That is the first real interaction and one where it started. I thought at that time she is so mature and really dependable. We were really not that close that time, I just thought of her as a <span class="secret-word" onclick="toggleSecret(this)">little bit cute<span class="tooltip-text">Okay, incredibly cute. I could not stop looking.</span></span> and charming, when she smiles I can see her braces, my gorgeous girl.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>The Leader and The Chatterbox</h2>
+            <p>When it is on social media she is so chatty. She knows what to reply, every chat to her she throws back harder. She complains about all the work we had to do, but works on it anyway. There is also the time when we were making a poster, she complains a lot. Her words are repeating, saying that her teammates are making theirs so complicated. But even though she is saying that, she is still helping them.</p>
+            <p>She is our president. She does not complain about her work in person, but in social media she just blurts it all out. I can see she is stressing about it. But even if it is like that, she still does her work and responsibilities. I wonder if I became the president, could I do all the responsibilities and work like that. I thought she would be serious and strict but not really, she is jolly and a carefree person. Complex yet simple, awkward yet natural. That was the time I started liking her, or <span class="secret-word" onclick="toggleSecret(this)">idolizing my pretty baby<span class="tooltip-text">You inspired me so much without even knowing it.</span></span>.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>Small Moments and Misunderstandings</h2>
+            <p>Following that teacher's day, it was a great day. She took the lead to surprise our adviser. Second quarter is the real beginning. We changed classrooms every class. I want to talk to her really bad, but I do not have any excuses. I thought hard about it, asking about school works, too formal. Asking about her, too obvious. So I asked her for anime recommendations. It was a fun but short chat.</p>
+            <p>Time passed so fast. My feelings for her maybe became hazed but not fading at all. I noticed she likes the camera. I catched a glance at her info, so she lives at Sancagulis, Bayambang. I have seen her ID picture, heavily edited, but I like her more with <span class="secret-word" onclick="toggleSecret(this)">natural looks<span class="tooltip-text">You are flawless just the way you are. No filters needed.</span></span>. I like her more without filters and make up lovey.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>The Unsent Letter</h2>
+            <p>December 3, I want to give her a sweater but insisted I must not. Following that is career guidance, she wore a black blazer and skirt looking like an accountant. Her smile contradicts her outfit, she looks gorgeous.</p>
+            <p>The Christmas party came. She wore a red blouse matching it with a brown skirt, looking beautiful. I wrote a <span class="secret-word" onclick="toggleSecret(this)">letter containing my feelings<span class="tooltip-text">I poured my entire heart into that paper.</span></span> for her, however sadly I lacked the courage to convey it. So in the last minutes, I did not submit it. I crumpled that paper and threw it into the bin, thinking that I should just forget my sweetest.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>The JS Prom Night</h2>
+            <p>The night was cold, and I was nervous. She enters with a beautiful off shoulder gown. She looks so elegant. In that night I was so nervous thinking of inviting her for a dance. Everyone started inviting other girls, so I took a deep breath, and went for it. I laid my hands to take her hands. Her hands are thin and warm, feeling so fragile yet rough.</p>
+            <p>We did a waltz for about 5 minutes, and there I <span class="secret-word" onclick="toggleSecret(this)">confessed my feelings<span class="tooltip-text">My heart was beating a thousand miles an hour.</span></span>. I said, "I liked you, happy birthday." She confusedly tilted her head, saying she did not hear it clearly. I did not repeat it then sweetheart.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>I Like You</h2>
+            <p>Before going home, I saw her waiting near the exit. My friends forced me to go for it. The thought of not telling these feelings felt more suffocating than saying it. So I confessed again. This time I repeated it clearly. "I like you, but you already have someone." She said no, there is no someone like that.</p>
+            <p>That day she did not say anything, no rejection, no reaction, and definitely no clear answer. But after that day, we chatted more and more often cutie.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>Building Memories</h2>
+            <p>We started hanging out together, most frequently in milk tea shops. We grew close, updating each other. I have given her a <span class="secret-word" onclick="toggleSecret(this)">box of Stick O<span class="tooltip-text">I wanted to buy you the whole store honestly.</span></span> too. She sends some of her tiktoks, and her smile looks dashing. She leaned on me during a project. We had an overnight in her house for a science project. I saw her family, her home life, her bruises from hard work. I do not hate it, it is just a beautiful representation of her life.</p>
+            <p>We camped outside, ate dinner, her food was my favorite, and edited videos together. I have gotten to know her, and her family, even more my darling.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>Morning Light</h2>
+            <p>It was morning, and the air was very fresh in her home. I liked the vibes there, but we still had work to do, so after tidying ourselves up we started filming for school. At first I could not seem to do anything, but there was a time we needed to make our script digital. I volunteered to type it. I do not want to brag, but I am kind of fast at typing and I really <span class="secret-word" onclick="toggleSecret(this)">wanted to impress her<span class="tooltip-text">I just wanted you to think I was cool haha.</span></span>.</p>
+            <p>We finished filming our last set of videos for our science project, and I felt a bit lost knowing that we would be apart after that.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>Late Night Calls</h2>
+            <p>It had been a while since the sleepover at her place, and this was also the time we started hanging out more actively, getting to know her more as time passed by. We started talking late at night, and this is where our calls began.</p>
+            <p>The calls may not have seemed legitimate at first, as we would only open our cameras for seconds, nor did we open the mic to talk to each other much. But for that time, it was a dream come true. Knowing we were in a call made me feel connected with her, and it made me feel even happier seeing the timer go up every second. There was even this one time we were on a call for 48 hours, which made me so happy I started <span class="secret-word" onclick="toggleSecret(this)">bragging about it<span class="tooltip-text">I was just so proud that you were giving me your time.</span></span> to all our classmates.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>The Playground and Mang Chaa</h2>
+            <p>There was a time we all hung out at the plaza playground after our practice in PE. I was up on the slide, and she was there at the seats, wearing a black skirt which perfectly showed her curves, and an orange t-shirt. She looked absolutely stunning. I was breathless, witnessing her and not being able to believe that I would be her boyfriend.</p>
+            <p>As we grew closer, we went to other milk tea places, and one where we were super touchy was Mang Chaa. We were accompanied by friends there, and feeling comfortable, I finally went for it and <span class="secret-word" onclick="toggleSecret(this)">pulled her gently into my embrace<span class="tooltip-text">I was so nervous but holding you felt so right.</span></span>.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>ICT and Filipino Classes</h2>
+            <p>As the days passed by, I could not help but be captivated by her figure. Every time we went to class, my head turned her way. I wondered what she would think if she saw me following her. I hoped she would not get creeped out by me, but since she was already aware of my feelings, I guessed it was fine.</p>
+            <p>Every day I looked forward to class because that meant a chance to see her more. ICT class was interesting because we did not have fixed chairs. Even though we were not grouped together, I could hear her rants when she was not getting the hang of something, and she tended to speak with me. She was so very happy in ICT cabling when the lan tester showed that she passed.</p>
+            <p>Our second subject, Filipino, was fifty-fifty. Sometimes she was in front, sometimes at my back. I liked seeing her, but I could not seem to focus on the class when I tended to stare at her too much. I remember seeing her eating her lunch quickly during this time, munching like a cute hamster. This is also where I saw her wear a Filipiniana dress, and she was so <span class="secret-word" onclick="toggleSecret(this)">incredibly stunning<span class="tooltip-text">I literally could not take my eyes off you.</span></span>.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>Science and PE Classes</h2>
+            <p>After Filipino we would go up to Science. I very much loved this subject, as for the time we were going up I could stare at her back as long as I wanted and she would never notice me. I liked this class so much because of our seating arrangement. We were up front, face to face. I could stare at her face as long as I wanted knowing she was busy listening to our teacher.</p>
+            <p>But I miscalculated one time. As I stared at her, I saw her turn her beautiful neck in my direction. I knew I should have turned my head away so she would not catch me, but there was this feeling of wanting to be seen by her. My head did not move a single inch so that I could see her beautiful eyes staring right at me. In the end, I chickened out because I could not stare at her too long, she is just so gorgeous.</p>
+            <p>After Science we had PE. The first time I saw her in our PE uniform, she looked so stunningly beautiful. I can never forget the image of her in a ponytail with those jogging pants. This is also the time she tended to sleep because she was tired, and I would always buy her an <span class="secret-word" onclick="toggleSecret(this)">ice candy<span class="tooltip-text">Anything to keep my pretty baby cool and happy.</span></span>. She liked cookies and cream or chocolate, so I always made sure to get those for my baby.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>Lunch, Math, and English</h2>
+            <p>She always complained about our short twenty minute lunch break, and honestly, I loved hearing her rant about it. Since it was our vacant time, it was up to luck whether I saw her or not. Every time I did, she was eating or socializing, so I could not seem to find the courage to talk to her then.</p>
+            <p>After that was Math. I liked my seat here because I could see the whole view of the classroom and catch a glimpse of her silhouette. But seeing her struggle in this subject made my heart ache. Whenever I wanted to help her, our seats were just too far apart.</p>
+            <p>Lastly, English. This was the longest walk to a classroom, so my eyes could feast on her figure while walking. Just like in Math, she was at the front. Seeing her beautiful silhouette every time, I could not help but bring out my phone and take candid pictures of her. When she finally caught me red handed, she just took the phone out of my hand and started taking pictures of herself. That is why this is my <span class="secret-word" onclick="toggleSecret(this)">favorite subject<span class="tooltip-text">I have a whole gallery of just you from this class.</span></span>, because this is where she took photos the most and where I collected so many pictures of my pretty baby.</p>
+        </div>
+
+        <div class="chapter">
+            <h2>AP and ESP</h2>
+            <p>We also had our irregular subjects, AP and ESP. The AP seating arrangement was random, so it was up to luck whether I could stare at her. But I was lucky with the groupings here, as I tended to be grouped with her. It served as a bridge for the gap between us, leading to another sweet sleepover at a classmate's house with her.</p>
+            <p>In ESP, there is not much to say except that I am a bad writer and she is a very good one. This is where I really took notice of her handwriting, because our teacher praised her work and made her an example for me to follow. Everything about her, even her handwriting, is just <span class="secret-word" onclick="toggleSecret(this)">perfect to me<span class="tooltip-text">You are my definition of perfect lovey.</span></span>.</p>
+        </div>
+
+        <div class="finale-box chapter" onclick="this.innerHTML='<div class=\'finale-icon\'>♾️</div><div class=\'finale-text\'>I cannot wait to write the rest of our chapters, side by side, forever.</div>'; this.style.borderColor='#4ade80';">
+            <div class="finale-icon">📖</div>
+            <div class="finale-text">To Be Continued...<br><span style="font-size: 0.9rem; font-style: italic; font-weight: normal; color: #6b21a8;">(Tap to close the book)</span></div>
+        </div>
+
+    </div>
+
+    <div id="tulip-garden" class="garden-container"></div>
+
+    <script>
+        // 1. SCROLL PROGRESS BAR
+        window.onscroll = function() {
+            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrolled = (winScroll / height) * 100;
+            document.getElementById("myBar").style.width = scrolled + "%";
+        };
+
+        // 2. SCROLL ANIMATION FOR CHAPTERS
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.chapter').forEach(chapter => {
+            observer.observe(chapter);
+        });
+
+        // 3. SECRET THOUGHTS LOGIC
+        function toggleSecret(element) {
+            // Close any currently open secrets
+            document.querySelectorAll('.secret-word.active').forEach(el => {
+                if (el !== element) el.classList.remove('active');
+            });
+            // Toggle the one that was clicked
+            element.classList.toggle('active');
+        }
+
+        // Close secrets if clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInside = event.target.closest('.secret-word');
+            if (!isClickInside) {
+                document.querySelectorAll('.secret-word.active').forEach(el => {
+                    el.classList.remove('active');
+                });
+            }
+        });
+
+        // 4. TULIP GARDEN LOGIC
+        window.addEventListener('DOMContentLoaded', () => {
+            const garden = document.getElementById('tulip-garden');
+            const tulipCount = 35; 
+            const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
+
+            for (let i = 0; i < tulipCount; i++) {
+                const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const randomX = Math.random() * 100;
+                const randomHeight = 120 + Math.random() * 180;
+                const randomDelay = Math.random() * -5;
+                const randomSpeed = 4 + Math.random() * 2;
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                tulip.setAttribute("viewBox", "0 0 50 150");
+                tulip.style.cssText = `
+                    position: absolute;
+                    bottom: -20px;
+                    left: ${randomX}%;
+                    height: ${randomHeight}px;
+                    z-index: ${Math.floor(randomHeight)};
+                    transform-origin: bottom center;
+                    animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
+                    filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
+                `;
+
+                tulip.innerHTML = `
+                    <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
+                    <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
+                    <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
+                `;
+                garden.appendChild(tulip);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | Our Purple Sanctuary</title>
+    <style>
+        /* --- 1. UNIFIED DREAMY PALETTE --- */
+        :root {
+            --primary-purple: #9333ea;
+            --bg-top: #f5d0fe;
+            --bg-bottom: #701a75;
+            --text-main: #4a044e;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden; 
+        }
+
+        /* --- 2. RESPONSIVE FLOATING NAVIGATION --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-top: 20px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; 
+            justify-content: center; 
+            width: 85%; 
+            max-width: 700px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover { color: var(--primary-purple); }
+
+        /* --- 3. LAYOUT --- */
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin-top: 40px;
+            padding-bottom: 150px; 
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #581c87;
+            font-family: 'Georgia', serif;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        /* --- 4. GALLERY STYLES --- */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        /* MOBILE OPTIMIZED GALLERY GRID */
+        .highlights-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 10px 10px 30px 10px; 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(30px);
+            opacity: 0; 
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .polaroid.visible {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg);
+        }
+
+        @media (hover: hover) {
+            .polaroid:hover {
+                transform: scale(1.05) rotate(-2deg) translateY(-5px) !important;
+                box-shadow: 0 15px 30px rgba(147, 51, 234, 0.2);
+                z-index: 10;
+            }
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background-color: #eee;
+            border: 1px solid #eee;
+            border-radius: 2px;
+        }
+
+        .polaroid p {
+            margin-top: 15px;
+            font-family: 'Segoe UI', sans-serif; 
+            font-weight: 600;
+            color: #444;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* LARGER SCREENS ADJUSTMENT */
+        @media (min-width: 600px) {
+            .glass-card { padding: 40px; }
+            .highlights-container {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 25px;
+            }
+            .polaroid { padding: 15px 15px 40px 15px; }
+            .polaroid img { height: 250px; }
+            .polaroid p { font-size: 1rem; margin-top: 20px; }
+            h1 { font-size: 3rem; }
+        }
+
+        @media (max-width: 599px) {
+            .glass-card { padding: 25px 15px; }
+            h1 { font-size: 2.2rem; }
+        }
+
+        /* --- 5. BUTTON & OVERLAY --- */
+        .btn {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-purple);
+            transform: translateY(-2px);
+        }
+
+        #portrait-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .portrait-container {
+            width: 80vh;
+            height: 80vh;
+            font-family: monospace;
+            line-height: 6px;
+            font-size: 6px;
+            word-break: break-all;
+            background: url(baby.jfif) no-repeat center;
+            background-size: cover;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
+        /* MOBILE FIX FOR PORTRAIT OVERLAY */
+        @media (max-width: 600px) {
+            .portrait-container {
+                width: 95vw; 
+                height: 95vw;
+                line-height: 3px; 
+                font-size: 3px;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10001; 
+        }
+        
+        .close-btn:hover { color: var(--primary-purple); }
+
+        /* --- 6. GARDEN --- */
+        .garden-container {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 45vh;
+            z-index: -1; pointer-events: none;
+            display: flex; align-items: flex-end;
+        }
+
+        @keyframes sway {
+            0% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+            100% { transform: rotate(-2deg); }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="story.html">Our Story</a>
+        <a href="music.html">Music</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="plans.html">Future</a>
+        <a href="open-when.html">Open When</a>
+        <a href="cycle.html">Cycle</a>
+        <a href="garden.html">The Garden</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Our Highlights</h1>
+            <div class="subtitle">Capturing every moment of us 📸</div>
+        </header>
+
+        <div class="glass-card">
+            <button class="btn" onclick="openPortrait()">View my heart</button>
+            
+            <div class="highlights-container">
+                <div class="polaroid"><img src="first.jfif" alt="Memory"><p>Where it all started lovey</p></div>
+                <div class="polaroid"><img src="artwork.jpg" alt="Memory"><p>Our first artwork together baby</p></div>
+                <div class="polaroid"><img src="debut.jpg" alt="Memory"><p>Your beautiful debut my princess</p></div>
+                <div class="polaroid"><img src="stalker.jpg" alt="Memory"><p>My cute stalker sweetheart</p></div>
+                <div class="polaroid"><img src="sleepymapeh.jpg" alt="Memory"><p>Sleepy in mapeh cutie</p></div>
+                <div class="polaroid"><img src="picturetaker1.jpg" alt="Memory"><p>Picture taking with my precious</p></div>
+                <div class="polaroid"><img src="cbabe316-101e-48c0-a112-d832f0a4ccdb.jfif" alt="Memory"><p>Another one of my pretty baby</p></div>
+                <div class="polaroid"><img src="candid1.jfif" alt="Memory"><p>English class but my eyes are only on you darling</p></div>
+                <div class="polaroid"><img src="heycutie.jfif" alt="Memory"><p>Hey there gorgeous princess</p></div>
+                <div class="polaroid"><img src="tiktokbaby.jpg" alt="Memory"><p>Tiktok with my sweetie</p></div>
+                <div class="polaroid"><img src="hule.jpg" alt="Memory"><p>Caught taking a picture of my beautiful babe</p></div>
+                <div class="polaroid"><img src="picturetaker2.jpg" alt="Memory"><p>You look so incredibly pretty here solace</p></div>
+                <div class="polaroid"><img src="bruh.jpg" alt="Memory"><p>Our first picture together baby</p></div>
+                <div class="polaroid"><img src="fburgos.jfif" alt="Memory"><p>First time at burgos together darling</p></div>
+                <div class="polaroid"><img src="sexy1.jpg" alt="Memory"><p>You look absolutely stunning my love</p></div>
+                <div class="polaroid"><img src="beautiful.jfif" alt="Memory"><p>Such a warm smile sweetheart</p></div>
+                <div class="polaroid"><img src="silhoutte.jfif" alt="Memory"><p>A stunning silhouette of my princess</p></div>
+                <div class="polaroid"><img src="ribosome.jfif" alt="Memory"><p>Can I be your pair like in dna cutie</p></div>
+                <div class="polaroid"><img src="picturetaker4.jpg" alt="Memory"><p>Always taking pictures of my precious</p></div>
+                <div class="polaroid"><img src="sexy2.jpg" alt="Memory"><p>So incredibly gorgeous my sweetie</p></div>
+                <div class="polaroid"><img src="picturetaker5.jpg" alt="Memory"><p>My absolute favorite model lovey</p></div>
+                <div class="polaroid"><img src="mangchaa.jfif" alt="Memory"><p>First time getting mang chaa together darling</p></div>
+                <div class="polaroid"><img src="ayawmatulog.jpg" alt="Memory"><p>Want to cuddle and sleep next to you babe</p></div>
+                <div class="polaroid"><img src="firstmovie.jfif" alt="Memory"><p>Our first movie together sweetheart</p></div>
+                <div class="polaroid"><img src="sleepcall.jfif" alt="Memory"><p>Peaceful sleep calls with my solace</p></div>
+                <div class="polaroid"><img src="focus.jfif" alt="Memory"><p>My only focus is you precious</p></div>
+                <div class="polaroid"><img src="firstfiesta.jfif" alt="Memory"><p>Our first fiesta together baby</p></div>
+                <div class="polaroid"><img src="milktea.jfif" alt="Memory"><p>Our favorite milk tea place cutie</p></div>
+                <div class="polaroid"><img src="beach.jpg" alt="Memory"><p>Beach date with my beautiful princess</p></div>
+                <div class="polaroid"><img src="filipino.jpg" alt="Memory"><p>Filipino cosplay you look so beautiful darling</p></div>
+                <div class="polaroid"><img src="silip.jpg" alt="Memory"><p>Peeking in class sweetie</p></div>
+                <div class="polaroid"><img src="humss.jfif" alt="Memory"><p>My future humss baby</p></div>
+                <div class="polaroid"><img src="worth.jfif" alt="Memory"><p>The only thing worth my time in english class lovey</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="portrait-overlay">
+        <span class="close-btn" onclick="closePortrait()">✖</span>
+        <div class="portrait-container" id="text-portrait"></div>
+        <p style="color:rgba(255,255,255,0.7); margin-top:20px; font-family: 'Segoe UI', sans-serif; font-style: italic;">Zoom out if you cannot see the face lovey</p>
+    </div>
+
+    <div id="tulip-garden" class="garden-container"></div>
+
+    <script>
+        // --- 1. SCROLL ANIMATION (Polaroid Pop-up) ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, (index % 10) * 100); 
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.polaroid').forEach(photo => {
+            observer.observe(photo);
+        });
+
+        // --- 2. TEXT PORTRAIT LOGIC ---
+        const phrase = "I love you ";
+        document.getElementById('text-portrait').innerText = phrase.repeat(50000);
+
+        function openPortrait() { 
+            document.getElementById('portrait-overlay').style.display = 'flex'; 
+        }
+        function closePortrait() { 
+            document.getElementById('portrait-overlay').style.display = 'none'; 
+        }
+
+        // --- 3. GARDEN GENERATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const garden = document.getElementById('tulip-garden');
+            const tulipCount = 35; 
+            const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
+
+            for (let i = 0; i < tulipCount; i++) {
+                const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const randomX = Math.random() * 100;
+                const randomHeight = 120 + Math.random() * 180;
+                const randomDelay = Math.random() * -5;
+                const randomSpeed = 4 + Math.random() * 2;
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                tulip.setAttribute("viewBox", "0 0 50 150");
+                tulip.style.cssText = `
+                    position: absolute;
+                    bottom: -20px;
+                    left: ${randomX}%;
+                    height: ${randomHeight}px;
+                    z-index: ${Math.floor(randomHeight)};
+                    transform-origin: bottom center;
+                    animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
+                    filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
+                `;
+
+                tulip.innerHTML = `
+                    <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
+                    <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
+                    <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
+                `;
+                garden.appendChild(tulip);
+            }
+        });
+    </script>
+</body>
+</html>

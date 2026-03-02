@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Purple Sanctuary</title>
+    <style>
+        /* --- 1. THE DREAMY PALETTE --- */
+        :root {
+            --primary-purple: #9333ea;
+            --bg-top: #f5d0fe;
+            --bg-bottom: #701a75;
+            --text-main: #4a044e;
+            --text-light: #6b21a8;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --accent-green: #4ade80;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. MOBILE-STYLE NOTIFICATION SYSTEM --- */
+        #notification-container {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            z-index: 10000; 
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none; 
+        }
+
+        .notification {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(74, 4, 78, 0.15);
+            pointer-events: auto; 
+            transform: translateY(-150%);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification-icon {
+            font-size: 2.2rem;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .notification-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .notification-title {
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            color: var(--primary-purple);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .notification-message {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #aaa;
+            cursor: pointer;
+            padding: 5px;
+            margin-top: -5px;
+            margin-right: -10px;
+            transition: 0.3s;
+        }
+
+        .notification-close:hover {
+            color: var(--primary-purple);
+        }
+
+        /* --- 3. NAVIGATION (The Floating Pill) --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-top: 80px; 
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 85%;
+            max-width: 600px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover { color: var(--primary-purple); }
+
+        /* --- 4. MAIN LAYOUT --- */
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin-top: 40px;
+            padding-bottom: 150px; 
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 2s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #581c87;
+            font-family: 'Georgia', serif; 
+        }
+
+        @media (max-width: 500px) {
+            h1 { font-size: 2.2rem; }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .greeting {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-purple);
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-family: 'Georgia', serif;
+        }
+        
+        @media (max-width: 500px) {
+            .greeting { font-size: 1.2rem; }
+        }
+
+        /* --- 5. GLASS CARDS --- */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            opacity: 0; 
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        @media (max-width: 500px) {
+            .glass-card {
+                padding: 25px 20px;
+            }
+        }
+
+        .glass-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            font-family: 'Georgia', serif;
+            color: var(--text-light);
+            margin-top: 0;
+            border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* --- 6. COMPONENT STYLES --- */
+        .timer-grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 10px; 
+        }
+        
+        .time-box { 
+            background: rgba(255,255,255,0.5); 
+            padding: 15px; 
+            border-radius: 15px; 
+            min-width: 60px; 
+            flex: 1 1 auto; 
+            max-width: 80px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        @media (max-width: 400px) {
+            .time-box {
+                padding: 10px;
+                min-width: 50px;
+            }
+            .time-num { font-size: 1.2rem !important; }
+        }
+
+        .time-num { display: block; font-size: 1.5rem; font-weight: 800; color: var(--primary-purple); }
+        .time-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .secret-input {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            border-radius: 30px;
+            outline: none;
+            text-align: center;
+            font-size: 1rem;
+            width: 60%;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            transition: 0.3s;
+        }
+        
+        .secret-input:focus {
+            border-color: var(--primary-purple);
+            background: rgba(255,255,255,0.8);
+        }
+
+        .btn {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .btn:hover { background: var(--primary-purple); }
+
+        /* --- 7. HOME CALENDAR STYLES --- */
+        .cal-nav-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-purple);
+            cursor: pointer;
+            padding: 5px 15px;
+            transition: 0.3s;
+        }
+        
+        .cal-nav-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .cal-header {
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: var(--primary-purple);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-main);
+            transition: 0.3s;
+        }
+
+        .cal-day.empty { background: transparent; }
+        
+        .date-bday { background: rgba(253, 164, 175, 0.6); color: #881337; }
+        .date-anniv { background: rgba(147, 51, 234, 0.7); color: white; }
+        .date-monthsary { background: rgba(216, 180, 254, 0.5); color: var(--text-main); }
+        .date-valentines { background: rgba(244, 114, 182, 0.5); color: #831843; }
+        .date-sweater { background: rgba(125, 211, 252, 0.5); color: #0c4a6e; }
+        .date-christmas { background: rgba(74, 222, 128, 0.5); color: #14532d; }
+        
+        .clickable {
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .clickable:hover {
+            transform: scale(1.15);
+            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
+            z-index: 10;
+        }
+
+        .clickable:active {
+            transform: scale(0.9);
+        }
+        
+        .today-highlight { 
+            border: 2px solid var(--primary-purple); 
+            box-shadow: 0 0 10px rgba(147, 51, 234, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .cal-day { font-size: 0.8rem; }
+        }
+
+        /* --- 8. GARDEN CONTAINER --- */
+        .garden-container {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 45vh;
+            z-index: -1; pointer-events: none;
+            display: flex; align-items: flex-end;
+        }
+        
+        @keyframes sway { 0% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } 100% { transform: rotate(-2deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="notification-container"></div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="story.html">Our Story</a>
+        <a href="music.html">Music</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="plans.html">Future</a>
+        <a href="open-when.html">Open When</a>
+        <a href="cycle.html">Cycle</a>
+        <a href="garden.html">The Garden</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Our Sanctuary</h1>
+            <div id="dynamic-greeting" class="greeting"></div>
+            <div class="subtitle">Our digital home, my love</div>
+        </header>
+
+        <div class="glass-card">
+            <h2>Time Spent Together</h2>
+            <div class="timer-grid">
+                <div class="time-box"><span id="years" class="time-num">0</span><span class="time-label">Yrs</span></div>
+                <div class="time-box"><span id="months" class="time-num">0</span><span class="time-label">Mths</span></div>
+                <div class="time-box"><span id="days" class="time-num">0</span><span class="time-label">Days</span></div>
+                <div class="time-box"><span id="hours" class="time-num">0</span><span class="time-label">Hrs</span></div>
+                <div class="time-box"><span id="mins" class="time-num">0</span><span class="time-label">Mins</span></div>
+                <div class="time-box"><span id="secs" class="time-num">0</span><span class="time-label">Secs</span></div>
+            </div>
+            <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 15px;">Since March 28, 2025</p>
+        </div>
+
+        <div class="glass-card">
+            <h2>Time You Have Graced This World</h2>
+            <div class="timer-grid">
+                <div class="time-box"><span id="b-years" class="time-num">0</span><span class="time-label">Yrs</span></div>
+                <div class="time-box"><span id="b-months" class="time-num">0</span><span class="time-label">Mths</span></div>
+                <div class="time-box"><span id="b-days" class="time-num">0</span><span class="time-label">Days</span></div>
+                <div class="time-box"><span id="b-hours" class="time-num">0</span><span class="time-label">Hrs</span></div>
+                <div class="time-box"><span id="b-mins" class="time-num">0</span><span class="time-label">Mins</span></div>
+                <div class="time-box"><span id="b-secs" class="time-num">0</span><span class="time-label">Secs</span></div>
+            </div>
+            <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 15px;">Since February 24, 2007</p>
+        </div>
+
+        <div class="glass-card">
+            <h2>Our Special Dates 📅</h2>
+            <p style="font-size: 0.95rem; margin-bottom: 20px;">Tap the colored dates to remember our special moments sweetheart</p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="cal-nav-btn" onclick="changeMainMonth(-1)">❮</button>
+                <h3 id="main-month-title" style="margin: 0; color: var(--primary-purple); font-family: 'Georgia', serif; font-size: 1.3rem;">Month Year</h3>
+                <button class="cal-nav-btn" onclick="changeMainMonth(1)">❯</button>
+            </div>
+
+            <div class="cal-grid" id="main-calendar-grid"></div>
+        </div>
+
+        <div class="glass-card">
+            <h2>A Hidden Note</h2>
+            <p style="margin-bottom: 20px;">Enter our anniversary year to unlock</p>
+            
+            <div id="lock-interface">
+                <input type="password" id="passInput" class="secret-input" placeholder="••••">
+                <br>
+                <button class="btn" onclick="checkPass()">Unlock</button>
+            </div>
+
+            <div id="secret-content" style="display:none; margin-top: 20px; text-align: left; padding: 25px; background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); border-radius: 15px; border: 1px solid var(--glass-border); max-height: 400px; overflow-y: auto;">
+                <p style="font-family: 'Georgia', serif; font-size: 1.3rem; color: var(--primary-purple); font-weight: bold; margin-bottom: 15px;">
+                    My dearest baby,
+                </p>
+                <p style="font-style: italic; line-height: 1.7; font-size: 1.05rem; margin-bottom: 15px;">
+                    If you have unlocked this note, it means you know exactly how long you have had my heart. I love you the most, my one and only baby. I built this whole digital sanctuary just to have a place to put all the reasons why you mean the world to me, but the truth is, there is not enough code in the world to hold it all.
+                </p>
+                <p style="font-style: italic; line-height: 1.7; font-size: 1.05rem; margin-bottom: 15px;">
+                    Looking back at how far we have come, from my nervous confession at the JS Prom to building this entire world for you, it makes me realize how incredibly lucky I am. Thank you for staying by my side through all the school stress, the late night talks, and every happy moment in between. From our awkward first interactions to where we are right now, you have completely captured my heart lovey.
+                </p>
+                <p style="font-style: italic; line-height: 1.7; font-size: 1.05rem; margin-bottom: 15px;">
+                    You are perfectly and naturally gorgeous, inside and out my darling. You are my peace when things get stressful. You are my favorite person to be with when doing absolutely nothing, my favorite teammate to game and to build our future, and the only person I want to dream with.
+                </p>
+                <p style="font-style: italic; line-height: 1.7; font-size: 1.05rem; margin-bottom: 15px;">
+                    Every single plan I have for the future has you right in the middle of it. Every time we talk about graduating together, traveling the world, and building our future home, I fall in love with you all over again. I am so incredibly proud of my hardworking, beautiful woman, and I promise I will always be here to support you in our dreams babe.
+                </p>
+                <p style="font-style: italic; line-height: 1.7; font-size: 1.05rem; margin-bottom: 25px;">
+                    Thank you for being my sanctuary. I promise to keep making you smile, and to keep loving you more every single day. I love you today, tomorrow, and infinitely.
+                </p>
+                <p style="font-family: 'Georgia', serif; font-size: 1.2rem; color: var(--primary-purple); font-weight: bold; text-align: right; margin: 0;">
+                    Forever yours ❤️
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="tulip-garden" class="garden-container"></div>
+
+    <script>
+        // --- 1. NOTIFICATION SYSTEM LOGIC ---
+        function spawnNotification(title, message, icon, autoCloseDelay = 0) {
+            const container = document.getElementById('notification-container');
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            
+            notif.innerHTML = `
+                <div class="notification-icon">${icon}</div>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+                <button class="notification-close" onclick="closeNotification(this)">✖</button>
+            `;
+            
+            container.appendChild(notif);
+            
+            setTimeout(() => {
+                notif.classList.add('show');
+            }, 100);
+
+            if (autoCloseDelay > 0) {
+                setTimeout(() => {
+                    if (notif.parentElement) {
+                        notif.classList.remove('show');
+                        setTimeout(() => notif.remove(), 500);
+                    }
+                }, autoCloseDelay);
+            }
+        }
+
+        function closeNotification(btnElement) {
+            const notif = btnElement.parentElement;
+            notif.classList.remove('show');
+            setTimeout(() => notif.remove(), 500);
+        }
+
+        function triggerGreetingsAndEvents() {
+            const hour = new Date().getHours();
+            let greetingTitle = "";
+            let greetingMsg = "";
+            let greetingIcon = "";
+
+            if (hour >= 5 && hour < 12) {
+                greetingTitle = "Good morning lovey";
+                greetingMsg = "Wakey wakey my pretty sunshine";
+                greetingIcon = "☀️";
+            } else if (hour >= 12 && hour < 17) {
+                greetingTitle = "Good afternoon";
+                greetingMsg = "Good afternoon my beautiful girl";
+                greetingIcon = "🌻";
+            } else if (hour >= 17 && hour < 21) {
+                greetingTitle = "Good evening";
+                greetingMsg = "Good evening my sweetest";
+                greetingIcon = "✨";
+            } else {
+                greetingTitle = "Sweet dreams";
+                greetingMsg = "Goodnight my pretty baby, sleep well";
+                greetingIcon = "🌙";
+            }
+
+            spawnNotification(greetingTitle, greetingMsg, greetingIcon, 6000);
+            document.getElementById('dynamic-greeting').innerText = greetingMsg;
+
+            const today = new Date();
+            const month = today.getMonth(); 
+            const date = today.getDate();
+
+            setTimeout(() => {
+                if (month === 1 && date === 24) { 
+                    spawnNotification("Happy birthday cutie", "Another year older, more beautiful, and another year I get to celebrate you. I love you so much", "🎂", 0);
+                } else if (month === 2 && date === 28) { 
+                    spawnNotification("Happy anniversary my love", "Thank you for the best time of my life. I am so lucky to call you mine. Here is to us", "🎉", 0);
+                } else if (date === 28) { 
+                    spawnNotification("Happy monthsary sweetheart", "Every single month with you is a blessing. I love you the most", "💕", 0);
+                }
+            }, 800); 
+        }
+
+        window.addEventListener('DOMContentLoaded', triggerGreetingsAndEvents);
+
+        // --- 2. SCROLL ANIMATION ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // --- 3. EXACT CALENDAR DIFFERENCE ALGORITHM ---
+        function calculateExactDifference(startDateObj) {
+            const now = new Date();
+            if (now < startDateObj) return { years: 0, months: 0, days: 0, hours: 0, mins: 0, secs: 0 };
+
+            let years = now.getFullYear() - startDateObj.getFullYear();
+            let months = now.getMonth() - startDateObj.getMonth();
+            let days = now.getDate() - startDateObj.getDate();
+            let hours = now.getHours() - startDateObj.getHours();
+            let mins = now.getMinutes() - startDateObj.getMinutes();
+            let secs = now.getSeconds() - startDateObj.getSeconds();
+
+            if (secs < 0) { secs += 60; mins--; }
+            if (mins < 0) { mins += 60; hours--; }
+            if (hours < 0) { hours += 24; days--; }
+
+            if (days < 0) {
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                days += prevMonth;
+                months--;
+            }
+            if (months < 0) {
+                months += 12;
+                years--;
+            }
+            return { years, months, days, hours, mins, secs };
+        }
+
+        // --- 4. TIMERS LOGIC ---
+        const anniversary = new Date("March 28, 2025 01:53:00");
+        const birthDate = new Date("February 24, 2007 00:00:00");
+
+        function updateTickers() {
+            const relDiff = calculateExactDifference(anniversary);
+            document.getElementById("years").innerText = relDiff.years;
+            document.getElementById("months").innerText = relDiff.months;
+            document.getElementById("days").innerText = relDiff.days;
+            document.getElementById("hours").innerText = relDiff.hours;
+            document.getElementById("mins").innerText = relDiff.mins;
+            document.getElementById("secs").innerText = relDiff.secs;
+
+            const bdayDiff = calculateExactDifference(birthDate);
+            document.getElementById("b-years").innerText = bdayDiff.years;
+            document.getElementById("b-months").innerText = bdayDiff.months;
+            document.getElementById("b-days").innerText = bdayDiff.days;
+            document.getElementById("b-hours").innerText = bdayDiff.hours;
+            document.getElementById("b-mins").innerText = bdayDiff.mins;
+            document.getElementById("b-secs").innerText = bdayDiff.secs;
+        }
+        setInterval(updateTickers, 1000);
+
+        // --- 5. MAIN CALENDAR LOGIC WITH CLICKABLE DATES ---
+        let currentMainMonthOffset = 0;
+
+        function changeMainMonth(direction) {
+            currentMainMonthOffset += direction;
+            renderMainCalendar();
+        }
+
+        function renderMainCalendar() {
+            const calElement = document.getElementById('main-calendar-grid');
+            const monthTitle = document.getElementById('main-month-title');
+            
+            const today = new Date();
+            const targetYear = today.getFullYear();
+            const targetMonth = today.getMonth() + currentMainMonthOffset;
+            
+            const firstDayOfMonth = new Date(targetYear, targetMonth, 1);
+            const lastDayOfMonth = new Date(targetYear, targetMonth + 1, 0);
+            
+            const actualYear = firstDayOfMonth.getFullYear();
+            const actualMonth = firstDayOfMonth.getMonth();
+            const daysInMonth = lastDayOfMonth.getDate();
+            const startingDayOfWeek = firstDayOfMonth.getDay(); 
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            monthTitle.innerText = monthNames[actualMonth] + " " + actualYear;
+            
+            let html = '';
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(d => {
+                html += `<div class="cal-header">${d}</div>`;
+            });
+            
+            for (let i = 0; i < startingDayOfWeek; i++) {
+                html += `<div class="cal-day empty"></div>`;
+            }
+            
+            for (let d = 1; d <= daysInMonth; d++) {
+                let dateClass = '';
+                let clickAttr = '';
+                
+                if (actualMonth === 1 && d === 24) { 
+                    dateClass = 'date-bday clickable';
+                    clickAttr = `onclick="spawnNotification('Her Birthday', 'Your special day my precious. I love celebrating you', '🎂', 4000)"`;
+                } else if (actualMonth === 2 && d === 28) { 
+                    dateClass = 'date-anniv clickable';
+                    clickAttr = `onclick="spawnNotification('Our Anniversary', 'The day my life changed forever. I am so lucky babe', '🎉', 4000)"`;
+                } else if (actualMonth === 1 && d === 14) {
+                    dateClass = 'date-valentines clickable';
+                    clickAttr = `onclick="spawnNotification('Valentines Day', 'A whole day dedicated to how much I love you cutie', '💖', 4000)"`;
+                } else if (actualMonth === 11 && d === 3) {
+                    dateClass = 'date-sweater clickable';
+                    clickAttr = `onclick="spawnNotification('Sweater Day', 'The day I was too shy to give you a sweater but wanted to keep you warm', '🧥', 5000)"`;
+                } else if (actualMonth === 11 && d === 25) {
+                    dateClass = 'date-christmas clickable';
+                    clickAttr = `onclick="spawnNotification('Christmas', 'My favorite present is having you in my life darling', '🎄', 4000)"`;
+                } else if (d === 28) { 
+                    dateClass = 'date-monthsary clickable';
+                    clickAttr = `onclick="spawnNotification('Happy Monthsary', 'Another beautiful month loving you sweetheart', '💕', 4000)"`;
+                }
+                
+                let todayClass = '';
+                if (d === today.getDate() && actualMonth === today.getMonth() && actualYear === today.getFullYear()) {
+                    todayClass = 'today-highlight';
+                }
+
+                html += `<div class="cal-day ${dateClass} ${todayClass}" ${clickAttr}>${d}</div>`;
+            }
+            calElement.innerHTML = html;
+        }
+
+        window.addEventListener('DOMContentLoaded', renderMainCalendar);
+
+        // --- 6. PASSWORD LOGIC ---
+        function checkPass() {
+            if (document.getElementById("passInput").value === "2025") {
+                document.getElementById("lock-interface").style.display = "none";
+                document.getElementById("secret-content").style.display = "block";
+            } else {
+                alert("Try again baby. Hint is the year");
+            }
+        }
+
+        // --- 7. GARDEN GENERATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const garden = document.getElementById('tulip-garden');
+            const tulipCount = 35; 
+            const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
+
+            for (let i = 0; i < tulipCount; i++) {
+                const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const randomX = Math.random() * 100;
+                const randomHeight = 120 + Math.random() * 180;
+                const randomDelay = Math.random() * -5;
+                const randomSpeed = 4 + Math.random() * 2;
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                tulip.setAttribute("viewBox", "0 0 50 150");
+                tulip.style.cssText = `
+                    position: absolute;
+                    bottom: -20px;
+                    left: ${randomX}%;
+                    height: ${randomHeight}px;
+                    z-index: ${Math.floor(randomHeight)};
+                    transform-origin: bottom center;
+                    animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
+                    filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
+                `;
+
+                tulip.innerHTML = `
+                    <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
+                    <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
+                    <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
+                `;
+                garden.appendChild(tulip);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Future | Purple Sanctuary</title>
+    <style>
+        /* --- 1. UNIFIED DREAMY PALETTE --- */
+        :root {
+            --primary-purple: #9333ea;
+            --bg-top: #f5d0fe;
+            --bg-bottom: #701a75;
+            --text-main: #4a044e;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --accent-green: #4ade80;
+            
+            /* CSS House Palette */
+            --house-siding: #d5cfc9; 
+            --house-roof: #8a8d91;   
+            --house-trim: #ffffff;   
+            --house-door: #87cefa;   
+            --house-brick: #b05e4a;  
+            --house-dark: #333;      
+            --window-glow: #ffdf73;  
+            --grass-green: #6b8e3a;  
+            --bush-green: #3d5e2a;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden; 
+        }
+
+        /* --- 2. RESPONSIVE FLOATING NAVIGATION --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-top: 20px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; 
+            justify-content: center; 
+            width: 85%; 
+            max-width: 600px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover { color: var(--primary-purple); }
+
+        /* --- 3. LAYOUT & ANIMATIONS --- */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 40px;
+            padding-bottom: 150px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 2s ease;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #581c87;
+            font-family: 'Georgia', serif;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 30px; 
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            opacity: 0; 
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .glass-card.visible { opacity: 1; transform: translateY(0); }
+
+        h2 {
+            font-family: 'Georgia', serif;
+            color: #6b21a8;
+            border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 1.5rem; 
+        }
+
+        /* --- 4. BUCKET LIST STYLES (MOBILE OPTIMIZED) --- */
+        .bucket-list { 
+            list-style: none; 
+            padding: 0; 
+            text-align: left; 
+        }
+        
+        .bucket-item { 
+            background: rgba(255, 255, 255, 0.5); 
+            margin-bottom: 12px; 
+            padding: 18px; 
+            border-radius: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            transition: 0.3s; 
+            cursor: pointer; 
+            border: 1px solid transparent; 
+        }
+        
+        .bucket-item:hover { 
+            background: rgba(255, 255, 255, 0.8); 
+            transform: translateX(5px); 
+        }
+        
+        .bucket-item input[type="checkbox"] { 
+            appearance: none; 
+            min-width: 24px; 
+            height: 24px; 
+            border: 2px solid var(--primary-purple); 
+            border-radius: 5px; 
+            display: grid; 
+            place-content: center; 
+            cursor: pointer; 
+        }
+        
+        .bucket-item input[type="checkbox"]::before { 
+            content: ""; 
+            width: 12px; 
+            height: 12px; 
+            transform: scale(0); 
+            background-color: var(--primary-purple); 
+            border-radius: 2px; 
+            transition: 120ms transform ease-in-out; 
+        }
+        
+        .bucket-item input[type="checkbox"]:checked::before { 
+            transform: scale(1); 
+        }
+        
+        .bucket-item.completed { 
+            opacity: 0.6; 
+            text-decoration: line-through; 
+            border-color: var(--accent-green); 
+        }
+
+        .bucket-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        /* --- 5. ANIMATED CSS CRAFTSMAN HOUSE --- */
+        .css-house-scene {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            margin: 20px 0;
+            border: 2px solid var(--glass-border);
+            background: linear-gradient(to bottom, #87CEEB, #e0f6ff);
+        }
+
+        .night-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, #110e2c, #3b0764); opacity: 0; animation: dayNightCycle 20s infinite; z-index: 0; }
+        .sun { position: absolute; top: 30px; left: 40px; width: 40px; height: 40px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 20px #FFD700; animation: sunMove 20s infinite; z-index: 1; }
+
+        .house-wrapper { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); width: 260px; height: 160px; z-index: 5; }
+        
+        /* Mobile Scaling for House */
+        @media (max-width: 400px) {
+            .css-house-scene { height: 220px; }
+            .house-wrapper { transform: translateX(-50%) scale(0.8); transform-origin: bottom center; }
+            .ground { height: 40px !important; }
+            .path { height: 40px !important; }
+        }
+
+        .chimney { position: absolute; right: 45px; bottom: 120px; width: 20px; height: 60px; background: var(--house-brick); border: 1px solid rgba(0,0,0,0.2); z-index: 1; }
+        .main-roof { position: absolute; top: 20px; left: 0; width: 260px; height: 60px; background: var(--house-roof); clip-path: polygon(25% 0, 75% 0, 100% 100%, 0 100%); z-index: 2; border-bottom: 4px solid var(--house-trim); }
+        .dormer { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); width: 80px; height: 45px; background: var(--house-siding); z-index: 3; border: 2px solid rgba(0,0,0,0.1); }
+        .dormer-roof { position: absolute; top: -20px; left: -10px; width: 100px; height: 20px; background: var(--house-roof); clip-path: polygon(50% 0, 100% 100%, 0 100%); border-bottom: 2px solid var(--house-trim); }
+        .dormer-win { position: absolute; bottom: 5px; width: 16px; height: 25px; background: var(--house-dark); border: 2px solid var(--house-trim); animation: lightsOn 20s infinite; }
+        .dormer-win.left { left: 15px; } .dormer-win.right { right: 15px; }
+        .house-body { position: absolute; bottom: 0; left: 15px; width: 230px; height: 80px; background: var(--house-siding); z-index: 3; display: flex; justify-content: center; align-items: flex-end; border-left: 1px solid rgba(0,0,0,0.1); border-right: 1px solid rgba(0,0,0,0.1); }
+        .door { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 60px; background: var(--house-door); border: 3px solid var(--house-trim); border-bottom: none; }
+        .main-win { position: absolute; bottom: 15px; width: 26px; height: 40px; background: var(--house-dark); border: 3px solid var(--house-trim); animation: lightsOn 20s infinite; }
+        .main-win.w1 { left: 20px; } .main-win.w2 { left: 55px; } .main-win.w3 { right: 55px; } .main-win.w4 { right: 20px; }
+        .porch-roof { position: absolute; bottom: 80px; left: -5px; width: 270px; height: 20px; background: var(--house-roof); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%); z-index: 6; border-bottom: 3px solid var(--house-trim); }
+        .porch-base { position: absolute; bottom: 0; left: 10px; width: 240px; height: 10px; background: #e0e0e0; z-index: 6; }
+        .column { position: absolute; bottom: 10px; width: 20px; height: 70px; z-index: 6; display: flex; flex-direction: column; align-items: center; }
+        .col-top { width: 10px; height: 40px; background: var(--house-trim); }
+        .col-base { width: 20px; height: 30px; background: var(--house-brick); }
+        .col1 { left: 15px; } .col2 { left: 80px; } .col3 { right: 80px; } .col4 { right: 15px; }
+        .stairs { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 50px; height: 15px; background: var(--house-brick); z-index: 7; border-top: 2px solid #fff; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2); }
+        
+        .ground { position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--grass-green); z-index: 4; }
+        .path { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 50px; background: #a3a3a3; clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%); z-index: 5; }
+        .bush { position: absolute; background: var(--bush-green); border-radius: 50%; z-index: 6; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); }
+        .b1 { bottom: 30px; left: 10%; width: 60px; height: 50px; } .b2 { bottom: 40px; left: 25%; width: 45px; height: 40px; } .b3 { bottom: 35px; right: 15%; width: 70px; height: 60px; } .b4 { bottom: 45px; right: 30%; width: 40px; height: 35px; }
+        
+        .lamppost { position: absolute; bottom: 10px; right: 25%; width: 6px; height: 90px; background: #111; z-index: 8; }
+        .lamp-head { position: absolute; top: -20px; left: -7px; width: 20px; height: 25px; background: rgba(255,255,255,0.4); clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%); border-bottom: 3px solid #111; animation: lightsOn 20s infinite; }
+        .lamp-top { position: absolute; top: -30px; left: -7px; width: 20px; height: 10px; background: #111; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+        @keyframes dayNightCycle { 0%, 20% { opacity: 0; } 40%, 60% { opacity: 0.85; } 80%, 100% { opacity: 0; } }
+        @keyframes sunMove { 0% { transform: translate(0, 0); opacity: 1; } 25% { transform: translate(60px, 80px); opacity: 0; } 75% { transform: translate(-40px, 80px); opacity: 0; } 100% { transform: translate(0, 0); opacity: 1; } }
+        @keyframes lightsOn { 0%, 25% { background: var(--house-dark); box-shadow: none; } 35%, 65% { background: var(--window-glow); box-shadow: 0 0 15px var(--window-glow); } 75%, 100% { background: var(--house-dark); box-shadow: none; } }
+
+        /* --- 6. DATE DECIDER STYLES --- */
+        .btn {
+            background: var(--text-main);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover { background: var(--primary-purple); transform: scale(1.05); }
+
+        #decider-result {
+            margin-top: 25px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-purple);
+            min-height: 3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 10px;
+            line-height: 1.4;
+        }
+
+        /* Mobile adjustments for the entire page */
+        @media (max-width: 500px) {
+            h1 { font-size: 2.2rem; }
+            .glass-card { padding: 25px 20px; }
+            nav { margin-top: 20px; padding: 12px 15px; }
+        }
+
+        /* --- 7. GARDEN CONTAINER --- */
+        .garden-container {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 45vh;
+            z-index: -1; pointer-events: none;
+            display: flex; align-items: flex-end;
+        }
+        @keyframes sway { 0% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } 100% { transform: rotate(-2deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="story.html">Our Story</a>
+        <a href="music.html">Music</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="plans.html">Future</a>
+        <a href="open-when.html">Open When</a>
+        <a href="cycle.html">Cycle</a>
+        <a href="garden.html">The Garden</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>The Future</h1>
+            <div class="subtitle">Everything I dream of doing with you ✨</div>
+        </header>
+
+        <div class="glass-card">
+            <h2>Our Bucket List 📝</h2>
+            <ul class="bucket-list">
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Finish this digital sanctuary together 🌐</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Graduate college side by side 🎓</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Reach the highest rank in ML together 🎮</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Travel around the world ✈️</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Go on a late night drive with our playlist 🚗</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Build the coziest bed for movie nights 🍿</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Cook our favorite meal together 🍳</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Have a peaceful beach trip, just you and me 🏖️</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Adopt a cute little pet for our future house 🐶</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Build our dream home 🏡</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">See you walk down the aisle ⛪</span>
+                </li>
+                <li class="bucket-item" onclick="toggleCheck(this)">
+                    <input type="checkbox"> <span class="bucket-text">Grow old and still hold hands 👵👴</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="glass-card">
+            <h2>Our Future Home 🏡</h2>
+            <p style="font-size: 0.95rem; opacity: 0.8;">Our beautiful home lovey. I used a bungalow design as inspiration, I hope it suits your taste baby.</p>
+            
+            <div class="css-house-scene">
+                <div class="night-overlay"></div>
+                <div class="sun"></div>
+                
+                <div class="house-wrapper">
+                    <div class="chimney"></div>
+                    
+                    <div class="main-roof"></div>
+                    
+                    <div class="dormer">
+                        <div class="dormer-roof"></div>
+                        <div class="dormer-win left"></div>
+                        <div class="dormer-win right"></div>
+                    </div>
+                    
+                    <div class="house-body">
+                        <div class="main-win w1"></div>
+                        <div class="main-win w2"></div>
+                        <div class="door"></div>
+                        <div class="main-win w3"></div>
+                        <div class="main-win w4"></div>
+                    </div>
+                    
+                    <div class="porch-roof"></div>
+                    
+                    <div class="column col1"><div class="col-top"></div><div class="col-base"></div></div>
+                    <div class="column col2"><div class="col-top"></div><div class="col-base"></div></div>
+                    <div class="column col3"><div class="col-top"></div><div class="col-base"></div></div>
+                    <div class="column col4"><div class="col-top"></div><div class="col-base"></div></div>
+                    
+                    <div class="porch-base"></div>
+                    <div class="stairs"></div>
+                </div>
+
+                <div class="ground">
+                    <div class="path"></div>
+                    <div class="bush b1"></div>
+                    <div class="bush b2"></div>
+                    <div class="bush b3"></div>
+                    <div class="bush b4"></div>
+                    
+                    <div class="lamppost">
+                        <div class="lamp-top"></div>
+                        <div class="lamp-head"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h2>The Date Decider 🎲</h2>
+            <p>Cannot decide. Let fate choose for us lovey.</p>
+            <button class="btn" onclick="spinWheel()">Spin the wheel</button>
+            <div id="decider-result">Ready for a date</div>
+        </div>
+    </div>
+
+    <div id="tulip-garden" class="garden-container"></div>
+
+    <script>
+        // --- 1. SCROLL ANIMATION ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // --- 2. BUCKET LIST LOGIC ---
+        function toggleCheck(item) {
+            const checkbox = item.querySelector('input');
+            checkbox.checked = !checkbox.checked;
+            
+            if(checkbox.checked) {
+                item.classList.add('completed');
+            } else {
+                item.classList.remove('completed');
+            }
+        }
+
+        // --- 3. DATE DECIDER LOGIC (Roulette Style) ---
+        const ideas = [
+            "Watch a movie together 🍿", 
+            "Listen to spotify and chill 🎶", 
+            "Read a book together 📖", 
+            "Play Mobile Legends, my princess 🎮", 
+            "Order some food and eat 🍕", 
+            "Take a long peaceful walk 🚶",
+            "Late night deep talks 🌙",
+            "Study date for college 📚",
+            "Go out and get something to eat baby 🧋",
+            "Build a cozy blanket fort and cuddle ⛺",
+            "Cook food together lovey 🍳",
+            "Have a sweet picnic at the park 🧺",
+            "Binge watch a new series gorgeous 📺",
+            "Take cute pictures together cutie 📸",
+            "Go thrift shopping for matching outfits 👕",
+            "Late night drive with our playlist 🚗",
+            "Peaceful study date at a cafe my sweetest ☕",
+            "Write sweet letters to each other ✍️",
+            "Try baking something my pretty baby 🍪",
+            "Watch the sunset together 🌅"
+        ];
+
+        function spinWheel() {
+            const resultBox = document.getElementById('decider-result');
+            let counter = 0;
+
+            document.querySelector('.btn').disabled = true;
+            document.querySelector('.btn').style.opacity = "0.7";
+
+            const shuffle = setInterval(() => {
+                const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
+                resultBox.innerText = randomIdea;
+                counter++;
+
+                if (counter > 20) { 
+                    clearInterval(shuffle);
+                    const finalChoice = ideas[Math.floor(Math.random() * ideas.length)];
+                    resultBox.innerText = "✨ Let us: " + finalChoice + " ✨";
+                    
+                    document.querySelector('.btn').disabled = false;
+                    document.querySelector('.btn').style.opacity = "1";
+                }
+            }, 80);
+        }
+
+        // --- 4. GARDEN GENERATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const garden = document.getElementById('tulip-garden');
+            const tulipCount = 35; 
+            const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
+
+            for (let i = 0; i < tulipCount; i++) {
+                const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const randomX = Math.random() * 100;
+                const randomHeight = 120 + Math.random() * 180;
+                const randomDelay = Math.random() * -5;
+                const randomSpeed = 4 + Math.random() * 2;
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+                tulip.setAttribute("viewBox", "0 0 50 150");
+                tulip.style.cssText = `
+                    position: absolute;
+                    bottom: -20px;
+                    left: ${randomX}%;
+                    height: ${randomHeight}px;
+                    z-index: ${Math.floor(randomHeight)};
+                    transform-origin: bottom center;
+                    animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
+                    filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
+                `;
+
+                tulip.innerHTML = `
+                    <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
+                    <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
+                    <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
+                `;
+                garden.appendChild(tulip);
+            }
+        });
+    </script>
+</body>
+</html>
