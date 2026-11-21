@@ -1,15 +1,6 @@
-/* plans.html */
+/* plans.html — bucket list, future home, date decider */
 
-/* --- 1. UNIFIED DREAMY PALETTE --- */
 :root {
-    --primary-purple: #9333ea;
-    --bg-top: #f5d0fe;
-    --bg-bottom: #701a75;
-    --text-main: #4a044e;
-    --glass: rgba(255, 255, 255, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --accent-green: #4ade80;
-    
     /* CSS House Palette */
     --house-siding: #d5cfc9; 
     --house-roof: #8a8d91;   
@@ -22,176 +13,54 @@
     --bush-green: #3d5e2a;
 }
 
-body {
-    background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-attachment: fixed;
-    color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden; 
+.card-lead { color: var(--plum-soft); font-size: 0.95rem; }
+
+/* --- Bucket list --- */
+.bucket-progress { font-size: 0.85rem; color: var(--plum-soft); margin: -8px 0 16px; }
+.bucket-list { list-style: none; padding: 0; margin: 0; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+.bucket-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  border: 1px solid var(--lavender-100);
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s var(--ease), opacity 0.3s;
 }
-
-/* --- 2. RESPONSIVE FLOATING NAVIGATION --- */
-nav {
-    position: sticky;
-    top: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    padding: 12px 30px;
-    border-radius: 50px;
-    margin-top: 20px;
-    z-index: 1000;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap; 
-    justify-content: center; 
-    width: 85%; 
-    max-width: 600px;
+.bucket-item:hover { transform: translateX(3px); }
+.bucket-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  margin: 0;
+  border: 2px solid var(--lavender-300);
+  border-radius: 8px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
 }
+.bucket-item input[type="checkbox"]:checked { background: var(--purple); border-color: var(--purple); }
+.bucket-item input[type="checkbox"]:checked::after { content: '✓'; color: #fff; font-size: 0.8rem; font-weight: 800; }
+.bucket-item.completed { background: var(--lavender-50); opacity: 0.75; }
+.bucket-item.completed .bucket-text { text-decoration: line-through; text-decoration-color: var(--purple); color: var(--plum-soft); }
+.bucket-text { font-size: 1rem; line-height: 1.4; }
 
-nav a {
-    text-decoration: none;
-    color: var(--text-main);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    transition: color 0.3s ease;
-    white-space: nowrap;
-}
-
-nav a:hover { color: var(--primary-purple); }
-
-/* --- 3. LAYOUT & ANIMATIONS --- */
-.container {
-    width: 90%;
-    max-width: 600px;
-    margin-top: 40px;
-    padding-bottom: 150px;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 40px;
-    animation: fadeIn 2s ease;
-}
-
-h1 {
-    font-size: 3rem;
-    margin: 0;
-    color: #581c87;
-    font-family: 'Georgia', serif;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    font-style: italic;
-    opacity: 0.8;
-    margin-top: 10px;
-}
-
-.glass-card {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 25px;
-    padding: 30px; 
-    margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    text-align: center;
-    opacity: 0; 
-    transform: translateY(30px);
-    transition: all 0.6s ease;
-}
-
-.glass-card.visible { opacity: 1; transform: translateY(0); }
-
-h2 {
-    font-family: 'Georgia', serif;
-    color: #6b21a8;
-    border-bottom: 1px solid rgba(147, 51, 234, 0.2);
-    padding-bottom: 15px;
-    margin-bottom: 20px;
-    font-size: 1.5rem; 
-}
-
-/* --- 4. BUCKET LIST STYLES (MOBILE OPTIMIZED) --- */
-.bucket-list { 
-    list-style: none; 
-    padding: 0; 
-    text-align: left; 
-}
-
-.bucket-item { 
-    background: rgba(255, 255, 255, 0.5); 
-    margin-bottom: 12px; 
-    padding: 18px; 
-    border-radius: 15px; 
-    display: flex; 
-    align-items: center; 
-    gap: 15px; 
-    transition: 0.3s; 
-    cursor: pointer; 
-    border: 1px solid transparent; 
-}
-
-.bucket-item:hover { 
-    background: rgba(255, 255, 255, 0.8); 
-    transform: translateX(5px); 
-}
-
-.bucket-item input[type="checkbox"] { 
-    appearance: none; 
-    min-width: 24px; 
-    height: 24px; 
-    border: 2px solid var(--primary-purple); 
-    border-radius: 5px; 
-    display: grid; 
-    place-content: center; 
-    cursor: pointer; 
-}
-
-.bucket-item input[type="checkbox"]::before { 
-    content: ""; 
-    width: 12px; 
-    height: 12px; 
-    transform: scale(0); 
-    background-color: var(--primary-purple); 
-    border-radius: 2px; 
-    transition: 120ms transform ease-in-out; 
-}
-
-.bucket-item input[type="checkbox"]:checked::before { 
-    transform: scale(1); 
-}
-
-.bucket-item.completed { 
-    opacity: 0.6; 
-    text-decoration: line-through; 
-    border-color: var(--accent-green); 
-}
-
-.bucket-text {
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-/* --- 5. ANIMATED CSS CRAFTSMAN HOUSE --- */
+/* --- Our future home (CSS drawing) --- */
 .css-house-scene {
     position: relative;
     width: 100%;
     height: 280px;
-    border-radius: 15px;
+    border-radius: var(--radius);
     overflow: hidden;
     box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
     margin: 20px 0;
-    border: 2px solid var(--glass-border);
+    border: 1px solid var(--lavender-100);
     background: linear-gradient(to bottom, #87CEEB, #e0f6ff);
 }
 
@@ -239,49 +108,21 @@ h2 {
 @keyframes sunMove { 0% { transform: translate(0, 0); opacity: 1; } 25% { transform: translate(60px, 80px); opacity: 0; } 75% { transform: translate(-40px, 80px); opacity: 0; } 100% { transform: translate(0, 0); opacity: 1; } }
 @keyframes lightsOn { 0%, 25% { background: var(--house-dark); box-shadow: none; } 35%, 65% { background: var(--window-glow); box-shadow: 0 0 15px var(--window-glow); } 75%, 100% { background: var(--house-dark); box-shadow: none; } }
 
-/* --- 6. DATE DECIDER STYLES --- */
-.btn {
-    background: var(--text-main);
-    color: white;
-    border: none;
-    padding: 15px 40px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: 0.3s;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.btn:hover { background: var(--primary-purple); transform: scale(1.05); }
-
+/* --- Date decider --- */
 #decider-result {
-    margin-top: 25px;
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--primary-purple);
-    min-height: 3em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 10px;
-    line-height: 1.4;
+  margin-top: 22px;
+  min-height: 3.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  border: 1px dashed var(--lavender-300);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--purple-deep);
+  line-height: 1.3;
 }
-
-/* Mobile adjustments for the entire page */
-@media (max-width: 500px) {
-    h1 { font-size: 2.2rem; }
-    .glass-card { padding: 25px 20px; }
-    nav { margin-top: 20px; padding: 12px 15px; }
-}
-
-/* --- 7. GARDEN CONTAINER --- */
-.garden-container {
-    position: fixed;
-    bottom: 0; left: 0; width: 100%; height: 45vh;
-    z-index: -1; pointer-events: none;
-    display: flex; align-items: flex-end;
-}
-@keyframes sway { 0% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } 100% { transform: rotate(-2deg); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+#decider-result.final { border-style: solid; border-color: var(--purple); animation: modal-in 0.4s var(--ease); }

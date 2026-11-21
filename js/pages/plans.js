@@ -1,29 +1,32 @@
 /* plans.html — shared helpers live in js/common.js */
 
-// --- 1. SCROLL ANIMATION ---
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.glass-card').forEach(card => {
-    observer.observe(card);
-});
-
 // --- 2. BUCKET LIST LOGIC ---
-function toggleCheck(item) {
-    const checkbox = item.querySelector('input');
-    checkbox.checked = !checkbox.checked;
-    
-    if(checkbox.checked) {
-        item.classList.add('completed');
-    } else {
-        item.classList.remove('completed');
-    }
+// Ticks are remembered on this device, so they stay after closing the page
+const BUCKET_KEY = 'bucketListDone';
+
+function toggleCheck(checkbox) {
+    checkbox.closest('.bucket-item').classList.toggle('completed', checkbox.checked);
+    saveBucket();
 }
+
+function saveBucket() {
+    const boxes = Array.from(document.querySelectorAll('.bucket-item input'));
+    const done = boxes.map(b => b.checked);
+    try { localStorage.setItem(BUCKET_KEY, JSON.stringify(done)); } catch (e) {}
+    const count = done.filter(Boolean).length;
+    document.getElementById('bucket-progress').textContent = count + ' of ' + boxes.length + ' done together';
+}
+
+function loadBucket() {
+    let done = [];
+    try { done = JSON.parse(localStorage.getItem(BUCKET_KEY)) || []; } catch (e) {}
+    document.querySelectorAll('.bucket-item input').forEach((box, i) => {
+        box.checked = !!done[i];
+        box.closest('.bucket-item').classList.toggle('completed', box.checked);
+    });
+    saveBucket();
+}
+loadBucket();
 
 // --- 3. DATE DECIDER LOGIC (Roulette Style) ---
 const ideas = [
@@ -53,8 +56,10 @@ function spinWheel() {
     const resultBox = document.getElementById('decider-result');
     let counter = 0;
 
-    document.querySelector('.btn').disabled = true;
-    document.querySelector('.btn').style.opacity = "0.7";
+    const spinBtn = document.getElementById('spin-btn');
+    spinBtn.disabled = true;
+    spinBtn.style.opacity = "0.7";
+    resultBox.classList.remove('final');
 
     const shuffle = setInterval(() => {
         const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
@@ -65,9 +70,10 @@ function spinWheel() {
             clearInterval(shuffle);
             const finalChoice = ideas[Math.floor(Math.random() * ideas.length)];
             resultBox.innerText = "✨ Let us: " + finalChoice + " ✨";
-            
-            document.querySelector('.btn').disabled = false;
-            document.querySelector('.btn').style.opacity = "1";
+            resultBox.classList.add('final');
+
+            spinBtn.disabled = false;
+            spinBtn.style.opacity = "1";
         }
     }, 80);
 }

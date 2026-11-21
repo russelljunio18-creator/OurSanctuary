@@ -16,57 +16,58 @@
 <body data-page="plans">
 
 
-    <div class="container">
-        <header>
+    <main class="container">
+        <header class="page-hero">
             <h1>The Future</h1>
             <div class="subtitle">Everything I dream of doing with you ✨</div>
         </header>
 
         <div class="glass-card">
             <h2>Our Bucket List 📝</h2>
+            <p class="bucket-progress" id="bucket-progress"></p>
             <ul class="bucket-list">
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Finish this digital sanctuary together 🌐</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Graduate college side by side 🎓</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Reach the highest rank in ML together 🎮</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Travel around the world ✈️</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Go on a late night drive with our playlist 🚗</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Build the coziest bed for movie nights 🍿</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Cook our favorite meal together 🍳</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Have a peaceful beach trip, just you and me 🏖️</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Adopt a cute little pet for our future house 🐶</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Build our dream home 🏡</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">See you walk down the aisle ⛪</span>
-                </li>
-                <li class="bucket-item" onclick="toggleCheck(this)">
-                    <input type="checkbox"> <span class="bucket-text">Grow old and still hold hands 👵👴</span>
-                </li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Finish this digital sanctuary together 🌐</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Graduate college side by side 🎓</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Reach the highest rank in ML together 🎮</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Travel around the world ✈️</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Go on a late night drive with our playlist 🚗</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Build the coziest bed for movie nights 🍿</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Cook our favorite meal together 🍳</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Have a peaceful beach trip, just you and me 🏖️</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Adopt a cute little pet for our future house 🐶</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Build our dream home 🏡</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">See you walk down the aisle ⛪</span>
+                </label></li>
+                <li><label class="bucket-item">
+                    <input type="checkbox" onchange="toggleCheck(this)"> <span class="bucket-text">Grow old and still hold hands 👵👴</span>
+                </label></li>
             </ul>
         </div>
 
         <div class="glass-card">
             <h2>Our Future Home 🏡</h2>
-            <p style="font-size: 0.95rem; opacity: 0.8;">Our beautiful home lovey. I used a bungalow design as inspiration, I hope it suits your taste baby.</p>
+            <p class="card-lead">Our beautiful home lovey. I used a bungalow design as inspiration, I hope it suits your taste baby.</p>
             
             <div class="css-house-scene">
                 <div class="night-overlay"></div>
@@ -120,12 +121,12 @@
         <div class="glass-card">
             <h2>The Date Decider 🎲</h2>
             <p>Cannot decide. Let fate choose for us lovey.</p>
-            <button class="btn" onclick="spinWheel()">Spin the wheel</button>
+            <button class="btn" id="spin-btn" onclick="spinWheel()">Spin the wheel</button>
             <div id="decider-result">Ready for a date</div>
         </div>
-    </div>
+    </main>
 
-    <div id="tulip-garden" class="garden-container"></div>
+    <div id="tulip-garden" class="garden-container" aria-hidden="true"></div>
 
 </body>
 </html>
