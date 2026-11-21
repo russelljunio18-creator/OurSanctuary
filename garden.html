@@ -15,62 +15,73 @@
 </head>
 <body data-page="garden" data-no-next>
 
+    <div class="scene" id="scene">
+        <!-- Sky: stars, fireflies / sun motes -->
+        <div class="sky-glow" aria-hidden="true"></div>
+        <canvas id="particles" aria-hidden="true"></canvas>
 
-    <div class="helper-text">Tap the grass to plant purple tulips in our future garden my love</div>
-
-    <canvas id="particles"></canvas>
-
-    <div class="celestial-container">
-        <div class="celestial-orb">
-            <span class="orb-text" id="breatheText">Breathe in lovey</span>
+        <!-- Breathing moon / sun -->
+        <div class="celestial-container">
+            <div class="celestial-orb" id="orb" aria-hidden="true"></div>
+            <div class="orb-text" id="breatheText" aria-live="polite">Breathe in lovey</div>
         </div>
+
+        <!-- Our future house -->
+        <div class="house-wrapper" aria-hidden="true">
+            <div class="chimney"></div>
+            <div class="main-roof"></div>
+            <div class="dormer">
+                <div class="dormer-roof"></div>
+                <div class="dormer-win left"></div>
+                <div class="dormer-win right"></div>
+            </div>
+            <div class="house-body">
+                <div class="main-win w1"></div>
+                <div class="main-win w2"></div>
+                <div class="door"></div>
+                <div class="main-win w3"></div>
+                <div class="main-win w4"></div>
+            </div>
+            <div class="porch-roof"></div>
+            <div class="column col1"><div class="col-top"></div><div class="col-base"></div></div>
+            <div class="column col2"><div class="col-top"></div><div class="col-base"></div></div>
+            <div class="column col3"><div class="col-top"></div><div class="col-base"></div></div>
+            <div class="column col4"><div class="col-top"></div><div class="col-base"></div></div>
+            <div class="porch-base"></div>
+            <div class="stairs"></div>
+        </div>
+
+        <!-- The lawn she plants on -->
+        <div class="garden-landscape" id="garden-zone" role="button" aria-label="Tap the grass to plant a tulip">
+            <div class="grass-texture"></div>
+            <div class="garden-path" id="garden-path"></div>
+            <div class="tulip-bed" id="tulip-bed"></div>
+        </div>
+
+        <div class="picket-fence" aria-hidden="true"></div>
+        <div class="thought-layer" id="thought-layer" aria-hidden="true"></div>
     </div>
 
-    <div class="house-wrapper">
-        <div class="chimney"></div>
-        <div class="main-roof"></div>
-        <div class="dormer">
-            <div class="dormer-roof"></div>
-            <div class="dormer-win left"></div>
-            <div class="dormer-win right"></div>
-        </div>
-        <div class="house-body">
-            <div class="main-win w1"></div>
-            <div class="main-win w2"></div>
-            <div class="door"></div>
-            <div class="main-win w3"></div>
-            <div class="main-win w4"></div>
-        </div>
-        <div class="porch-roof"></div>
-        <div class="column col1"><div class="col-top"></div><div class="col-base"></div></div>
-        <div class="column col2"><div class="col-top"></div><div class="col-base"></div></div>
-        <div class="column col3"><div class="col-top"></div><div class="col-base"></div></div>
-        <div class="column col4"><div class="col-top"></div><div class="col-base"></div></div>
-        <div class="porch-base"></div>
-        <div class="stairs"></div>
-    </div>
+    <!-- Hint (fades away after her first tulip) -->
+    <div class="helper-text" id="helper-text">Tap the grass to plant purple tulips in our future garden my love</div>
 
-    <div class="garden-landscape" id="garden-zone">
-        <div class="grass-texture"></div>
-        <div class="garden-path" id="garden-path"></div>
-    </div>
-    
-    <div class="picket-fence"></div>
-
-    <div class="bouquet-card">
-        <p>Your special bouquet</p>
-        <div class="bouquet-flowers">
-            <div class="bouquet-tulip" role="button" tabindex="0" onclick="openNote(0)">🌷</div>
-            <div class="bouquet-tulip" role="button" tabindex="0" onclick="openNote(1)">🌷</div>
-            <div class="bouquet-tulip" role="button" tabindex="0" onclick="openNote(2)">🌷</div>
+    <!-- Bottom controls -->
+    <div class="dock" role="toolbar" aria-label="Garden">
+        <div class="dock__count" id="tulip-count" aria-live="polite">0 planted</div>
+        <div class="dock__notes">
+            <span class="dock__label">Your bouquet</span>
+            <button class="bouquet-tulip" onclick="openNote(0)" aria-label="Open note 1">🌷</button>
+            <button class="bouquet-tulip" onclick="openNote(1)" aria-label="Open note 2">🌷</button>
+            <button class="bouquet-tulip" onclick="openNote(2)" aria-label="Open note 3">🌷</button>
         </div>
-        <a class="bouquet-link" href="bouquet.html">See your whole bouquet →</a>
+        <button class="dock__btn" id="mode-btn" onclick="toggleMode()" aria-label="Switch day or night">🌙</button>
     </div>
 
     <div class="modal-overlay" id="noteModal" onclick="closeNote()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeNote()" aria-label="Close">✕</button>
             <div id="note-body"></div>
+            <a class="note-link" href="bouquet.html">See your whole bouquet →</a>
         </div>
     </div>
 
