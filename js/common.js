@@ -126,7 +126,34 @@ function setupReveal() {
   items.forEach(el => { el.classList.add('reveal'); observer.observe(el); });
 }
 
+/* ---------- Swaying tulips along the bottom (any page with #tulip-garden) ---------- */
+function plantTulipGarden() {
+  const garden = document.getElementById('tulip-garden');
+  if (!garden) return;
+  const tulipCount = window.innerWidth < 600 ? 22 : 35;
+  const colors = ['#7c3aed', '#a855f7', '#d8b4fe', '#e9a8d0'];
+  for (let i = 0; i < tulipCount; i++) {
+    const tulip = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const height = 120 + Math.random() * 180;
+    tulip.setAttribute('viewBox', '0 0 50 150');
+    tulip.style.cssText = `
+      position: absolute;
+      bottom: -20px;
+      left: ${Math.random() * 100}%;
+      height: ${height}px;
+      z-index: ${Math.floor(height)};
+      transform-origin: bottom center;
+      animation: sway ${4 + Math.random() * 2}s ease-in-out ${Math.random() * -5}s infinite;`;
+    tulip.innerHTML = `
+      <path d="M25 150 Q25 100 25 50" stroke="#5fb87a" stroke-width="3" fill="none" />
+      <path d="M25 120 Q40 100 25 80" fill="#5fb87a" opacity="0.6" />
+      <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${colors[Math.floor(Math.random() * colors.length)]}" />`;
+    garden.appendChild(tulip);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  plantTulipGarden();
   buildPageChrome();
   buildHub();
   setupReveal();

@@ -1,6 +1,6 @@
 /* Home page (index.html) */
 
-.home-hero { padding-top: 56px; padding-bottom: 32px; animation: hero-in 1.4s var(--ease) both; }
+.home-hero { padding-top: 96px; padding-bottom: 32px; animation: hero-in 1.4s var(--ease) both; }
 .greeting {
   font-family: var(--font-display);
   font-size: 1.45rem;
@@ -101,13 +101,3 @@
 .letter p { margin-bottom: 1em; }
 .letter__greeting { font-size: 1.5rem; font-weight: 700; color: var(--purple-deep); }
 .letter__sign { text-align: right; font-weight: 700; color: var(--purple-deep); margin: 0; }
-
-/* Tulips along the bottom of the screen */
-.garden-container {
-  position: fixed;
-  bottom: 0; left: 0; width: 100%; height: 40vh;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.55;
-}
-@keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }

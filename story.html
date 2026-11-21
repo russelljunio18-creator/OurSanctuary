@@ -2,323 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Our Story | Purple Sanctuary</title>
-    <style>
-        /* --- 1. THE DREAMY PALETTE --- */
-        :root {
-            --primary-purple: #9333ea;
-            --bg-top: #f5d0fe;
-            --bg-bottom: #701a75;
-            --text-main: #4a044e;
-            --glass: rgba(255, 255, 255, 0.25);
-            --glass-border: rgba(255, 255, 255, 0.4);
-        }
-
-        body {
-            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-            background-attachment: fixed;
-            color: var(--text-main);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* --- 2. READING PROGRESS BAR --- */
-        .progress-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.2);
-            z-index: 2000;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--primary-purple);
-            width: 0%;
-            box-shadow: 0 0 10px var(--primary-purple);
-            transition: width 0.1s ease;
-        }
-
-        /* --- 3. RESPONSIVE NAVIGATION --- */
-        nav {
-            position: sticky;
-            top: 20px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(12px);
-            padding: 12px 30px;
-            border-radius: 50px;
-            margin-top: 20px;
-            z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap; 
-            justify-content: center;
-            width: 85%;
-            max-width: 700px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
-            white-space: nowrap;
-        }
-
-        nav a:hover { color: var(--primary-purple); }
-
-        /* --- 4. TIMELINE CONTAINER --- */
-        .story-container {
-            position: relative;
-            width: 90%;
-            max-width: 800px;
-            margin-top: 40px;
-            padding-bottom: 150px; 
-        }
-
-        .header-title {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: fadeIn 2s ease;
-        }
-
-        h1 { 
-            font-size: 3rem; 
-            margin-bottom: 10px; 
-            color: #581c87; 
-            font-family: 'Georgia', serif;
-        }
-
-        .subtitle { 
-            font-size: 1.2rem; 
-            font-style: italic; 
-            opacity: 0.8; 
-        }
-
-        .timeline-line {
-            position: absolute;
-            left: 20px; 
-            top: 180px; 
-            bottom: 200px; 
-            width: 4px;
-            background: rgba(147, 51, 234, 0.3);
-            border-radius: 2px;
-            z-index: 0;
-        }
-
-        /* --- 5. CHAPTER CARDS --- */
-        .chapter {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            margin-left: 50px; 
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease;
-            opacity: 0; 
-            transform: translateY(40px);
-            z-index: 1;
-        }
-
-        .chapter.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .chapter::before {
-            content: '';
-            position: absolute;
-            left: -43px; 
-            top: 40px;
-            width: 26px;
-            height: 26px;
-            background: var(--primary-purple);
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(147, 51, 234, 0.5), inset 0 0 5px #fffafa;
-            border: 3px solid #f5d0fe;
-        }
-
-        h2 {
-            margin-top: 0;
-            color: #6b21a8;
-            font-family: 'Georgia', serif;
-            border-bottom: 2px solid rgba(147, 51, 234, 0.2);
-            padding-bottom: 10px;
-            font-size: 1.5rem;
-        }
-
-        p {
-            line-height: 1.8;
-            font-size: 1.05rem;
-            text-align: justify;
-            margin-bottom: 15px;
-        }
-
-        /* --- 6. SECRET THOUGHTS (INTERACTIVE TEXT) --- */
-        .secret-word {
-            color: #6b21a8;
-            font-weight: bold;
-            cursor: pointer;
-            border-bottom: 1.5px dashed #6b21a8;
-            transition: 0.3s;
-            position: relative;
-        }
-
-        .secret-word:hover {
-            color: var(--primary-purple);
-            text-shadow: 0 0 5px rgba(147, 51, 234, 0.5);
-        }
-
-        /* The little tooltip bubble */
-        .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--text-main);
-            color: #fff;
-            text-align: center;
-            border-radius: 10px;
-            padding: 10px;
-            position: absolute;
-            z-index: 100;
-            bottom: 150%; 
-            left: 50%;
-            margin-left: -100px; /* Center the tooltip */
-            font-size: 0.85rem;
-            font-weight: normal;
-            font-style: italic;
-            opacity: 0;
-            transition: opacity 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            font-family: 'Segoe UI', sans-serif;
-            pointer-events: none;
-        }
-
-        .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: var(--text-main) transparent transparent transparent;
-        }
-
-        .secret-word.active .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        /* --- 7. TO BE CONTINUED SECTION --- */
-        .finale-box {
-            text-align: center;
-            margin-top: 60px;
-            margin-left: 50px;
-            padding: 30px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.4);
-            border: 2px dashed var(--primary-purple);
-            cursor: pointer;
-            transition: 0.4s;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .finale-box.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .finale-box:hover {
-            background: rgba(255, 255, 255, 0.6);
-            transform: scale(1.02);
-        }
-
-        .finale-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-        }
-
-        .finale-text {
-            font-family: 'Georgia', serif;
-            font-size: 1.4rem;
-            color: var(--primary-purple);
-            font-weight: bold;
-        }
-
-        /* --- 8. MOBILE ADJUSTMENTS --- */
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            .timeline-line { left: 10px; }
-            .chapter, .finale-box { 
-                margin-left: 30px; 
-                padding: 25px 20px; 
-            }
-            .chapter::before { 
-                left: -31px; 
-                width: 20px; 
-                height: 20px; 
-                top: 30px; 
-            }
-            nav {
-                margin-top: 20px;
-                padding: 12px 15px;
-            }
-        }
-
-        /* --- 9. GARDEN CONTAINER --- */
-        .garden-container {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%; height: 40vh;
-            z-index: -1; pointer-events: none;
-            display: flex; align-items: flex-end;
-        }
-        @keyframes sway { 0% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } 100% { transform: rotate(-2deg); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages/story.css">
+    <script src="js/common.js" defer></script>
+    <script src="js/pages/story.js" defer></script>
 </head>
-<body>
+<body data-page="story">
+
 
     <div class="progress-container">
         <div class="progress-bar" id="myBar"></div>
     </div>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="story.html">Our Story</a>
-        <a href="music.html">Music</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="plans.html">Future</a>
-        <a href="open-when.html">Open When</a>
-        <a href="cycle.html">Cycle</a>
-        <a href="garden.html">The Garden</a>
-    </nav>
-
-    <div class="story-container">
-        <div class="header-title">
+    <main class="story-container">
+        <header class="page-hero">
             <h1>Memories of Her</h1>
             <div class="subtitle">From strangers to my entire world</div>
-            <p style="font-size: 0.9rem; margin-top:15px; opacity:0.7;">(Tap the highlighted words to see my secret thoughts baby)</p>
-        </div>
+            <p class="hint">(Tap the highlighted words to see my secret thoughts baby)</p>
+        </header>
 
-        <div class="timeline-line"></div>
+        <div class="timeline">
 
         <div class="chapter">
             <h2>The First Impressions</h2>
@@ -407,93 +116,14 @@
             <p>In ESP, there is not much to say except that I am a bad writer and she is a very good one. This is where I really took notice of her handwriting, because our teacher praised her work and made her an example for me to follow. Everything about her, even her handwriting, is just <span class="secret-word" onclick="toggleSecret(this)">perfect to me<span class="tooltip-text">You are my definition of perfect lovey.</span></span>.</p>
         </div>
 
-        <div class="finale-box chapter" onclick="this.innerHTML='<div class=\'finale-icon\'>♾️</div><div class=\'finale-text\'>I cannot wait to write the rest of our chapters, side by side, forever.</div>'; this.style.borderColor='#4ade80';">
+        <div class="finale-box chapter" onclick="closeBook(this)" role="button" tabindex="0">
             <div class="finale-icon">📖</div>
-            <div class="finale-text">To Be Continued...<br><span style="font-size: 0.9rem; font-style: italic; font-weight: normal; color: #6b21a8;">(Tap to close the book)</span></div>
+            <div class="finale-text">To Be Continued...<span class="finale-hint">(Tap to close the book)</span></div>
         </div>
+        </div>
+    </main>
 
-    </div>
+    <div id="tulip-garden" class="garden-container" aria-hidden="true"></div>
 
-    <div id="tulip-garden" class="garden-container"></div>
-
-    <script>
-        // 1. SCROLL PROGRESS BAR
-        window.onscroll = function() {
-            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            var scrolled = (winScroll / height) * 100;
-            document.getElementById("myBar").style.width = scrolled + "%";
-        };
-
-        // 2. SCROLL ANIMATION FOR CHAPTERS
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, 100);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.chapter').forEach(chapter => {
-            observer.observe(chapter);
-        });
-
-        // 3. SECRET THOUGHTS LOGIC
-        function toggleSecret(element) {
-            // Close any currently open secrets
-            document.querySelectorAll('.secret-word.active').forEach(el => {
-                if (el !== element) el.classList.remove('active');
-            });
-            // Toggle the one that was clicked
-            element.classList.toggle('active');
-        }
-
-        // Close secrets if clicking outside
-        document.addEventListener('click', function(event) {
-            const isClickInside = event.target.closest('.secret-word');
-            if (!isClickInside) {
-                document.querySelectorAll('.secret-word.active').forEach(el => {
-                    el.classList.remove('active');
-                });
-            }
-        });
-
-        // 4. TULIP GARDEN LOGIC
-        window.addEventListener('DOMContentLoaded', () => {
-            const garden = document.getElementById('tulip-garden');
-            const tulipCount = 35; 
-            const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
-
-            for (let i = 0; i < tulipCount; i++) {
-                const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                const randomX = Math.random() * 100;
-                const randomHeight = 120 + Math.random() * 180;
-                const randomDelay = Math.random() * -5;
-                const randomSpeed = 4 + Math.random() * 2;
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-                tulip.setAttribute("viewBox", "0 0 50 150");
-                tulip.style.cssText = `
-                    position: absolute;
-                    bottom: -20px;
-                    left: ${randomX}%;
-                    height: ${randomHeight}px;
-                    z-index: ${Math.floor(randomHeight)};
-                    transform-origin: bottom center;
-                    animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
-                    filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
-                `;
-
-                tulip.innerHTML = `
-                    <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
-                    <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
-                    <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
-                `;
-                garden.appendChild(tulip);
-            }
-        });
-    </script>
 </body>
 </html>

@@ -1,0 +1,143 @@
+/* story.html — timeline of chapters */
+
+/* Reading progress bar along the very top */
+.progress-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  z-index: 2000;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--purple), var(--rose));
+  transition: width 0.1s linear;
+}
+
+.hint { font-size: 0.9rem; color: var(--plum-soft); margin-top: 14px; }
+
+/* Timeline */
+.story-container {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--gutter) 40px;
+}
+.timeline {
+  position: relative;
+  padding-left: 34px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 9px; top: 12px; bottom: 12px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--lavender-300), var(--rose-soft));
+  border-radius: 2px;
+}
+
+.chapter {
+  position: relative;
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(22px, 5vw, 36px);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: transform 0.7s var(--ease), opacity 0.7s var(--ease);
+}
+.chapter.visible { opacity: 1; transform: none; }
+.chapter::before {
+  content: '';
+  position: absolute;
+  left: -33px; top: 32px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--purple);
+  border: 4px solid var(--cream);
+  box-shadow: 0 0 0 1px var(--lavender-300);
+}
+.chapter-num {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--purple);
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.chapter h2 {
+  font-size: clamp(1.6rem, 5vw, 1.9rem);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+}
+.chapter p { line-height: 1.85; font-size: 1.02rem; margin-bottom: 14px; }
+.chapter p:last-child { margin-bottom: 0; }
+
+/* Highlighted words with secret thoughts */
+.secret-word {
+  position: relative;
+  color: var(--purple-deep);
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(transparent 62%, var(--rose-soft) 62%);
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+.secret-word:hover,
+.secret-word.active { background: linear-gradient(transparent 30%, var(--rose-soft) 30%); }
+
+.tooltip-text {
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  z-index: 100;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  width: min(240px, 70vw);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--plum);
+  color: #fff;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: var(--shadow-lift);
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s var(--ease);
+}
+.tooltip-text::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 50%;
+  margin-left: -6px;
+  border: 6px solid transparent;
+  border-top-color: var(--plum);
+}
+.secret-word.active .tooltip-text { display: block; visibility: visible; opacity: 1; transform: translateX(calc(-50% + var(--nudge, 0px))); animation: tip-in 0.25s var(--ease); }
+.tooltip-text::after { transform: translateX(calc(-1 * var(--nudge, 0px))); }
+@keyframes tip-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* "To be continued" */
+.finale-box {
+  text-align: center;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px dashed var(--lavender-300);
+}
+.finale-box:hover { background: var(--surface-strong); }
+.finale-box.closed { border-style: solid; border-color: var(--leaf); }
+.finale-icon { font-size: 2.6rem; margin-bottom: 8px; }
+.finale-text { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; color: var(--purple-deep); }
+.finale-hint { display: block; font-family: var(--font-body); font-size: 0.9rem; font-style: italic; font-weight: 400; color: var(--plum-soft); margin-top: 4px; }

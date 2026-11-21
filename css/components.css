@@ -289,3 +289,13 @@
   margin: 8px 0 14px;
 }
 .section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+/* ---------- Swaying tulips along the bottom (built by common.js) ---------- */
+.garden-container {
+  position: fixed;
+  bottom: 0; left: 0; width: 100%; height: 40vh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+}
+@keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
