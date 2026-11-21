@@ -16,32 +16,34 @@
 <body data-page="music">
 
 
-    <div class="container">
-        <header>
+    <main class="container">
+        <header class="page-hero">
             <h1>Our Soundtrack 🎵</h1>
             <div class="subtitle">Every song that reminds me of you, sweetheart</div>
         </header>
 
         <div class="glass-card">
             <h2>Currently Playing</h2>
-            <div class="audio-wrapper">
-                <div style="text-align: left;">
-                    <strong style="display: block; font-size: 1.1rem;">Iris</strong>
-                    <span style="font-size: 0.8rem; opacity: 0.7;">Goo Goo Dolls</span>
+            <div class="player" id="player">
+                <div class="player__art" aria-hidden="true">♪</div>
+                <div class="player__info">
+                    <strong class="player__title">Iris</strong>
+                    <span class="player__artist">Goo Goo Dolls</span>
                 </div>
-                <button class="play-btn" onclick="togglePlay()" id="playBtn">▶</button>
+                <button class="play-btn" onclick="togglePlay()" id="playBtn" aria-label="Play">▶</button>
             </div>
-            <div class="progress-bar">
+            <div class="seek" id="seek" aria-label="Song position">
                 <div id="progress" class="progress-fill"></div>
             </div>
-            <audio id="myAudio">
+            <div class="times"><span id="time-now">0:00</span><span id="time-total">0:00</span></div>
+            <audio id="myAudio" preload="metadata">
                 <source src="assets/audio/iris.mp3" type="audio/mpeg">
             </audio>
         </div>
 
         <div class="glass-card">
             <h2>Our Playlists and Albums 💿</h2>
-            <p style="margin-bottom: 20px; font-size: 0.9rem; opacity: 0.8;">Open directly or copy the link to listen, my precious</p>
+            <p class="card-lead">Open directly or copy the link to listen, my precious</p>
             
             <div class="album-list">
                 
@@ -51,7 +53,7 @@
                         <span>Album for my baby (English)</span>
                     </div>
                     <div class="action-buttons">
-                        <a href="https://open.spotify.com/playlist/75WU6V2QgAlxJkpeuNH4xo?si=f9a1zV6OScGsMqrjPiKrHg" target="_blank" class="action-btn">Open</a>
+                        <a href="https://open.spotify.com/playlist/75WU6V2QgAlxJkpeuNH4xo?si=f9a1zV6OScGsMqrjPiKrHg" target="_blank" rel="noopener" class="action-btn">Open</a>
                         <button onclick="copyToClipboard('https://open.spotify.com/playlist/75WU6V2QgAlxJkpeuNH4xo?si=f9a1zV6OScGsMqrjPiKrHg', this)" class="action-btn btn-outline">Copy Link</button>
                     </div>
                 </div>
@@ -62,7 +64,7 @@
                         <span>Album for my bebe (Tagalog)</span>
                     </div>
                     <div class="action-buttons">
-                        <a href="https://open.spotify.com/playlist/7sNmjS4fyzqSAgQ2RPPLol?si=UEdHHUzcS5OCQAUPzu52xw" target="_blank" class="action-btn">Open</a>
+                        <a href="https://open.spotify.com/playlist/7sNmjS4fyzqSAgQ2RPPLol?si=UEdHHUzcS5OCQAUPzu52xw" target="_blank" rel="noopener" class="action-btn">Open</a>
                         <button onclick="copyToClipboard('https://open.spotify.com/playlist/7sNmjS4fyzqSAgQ2RPPLol?si=UEdHHUzcS5OCQAUPzu52xw', this)" class="action-btn btn-outline">Copy Link</button>
                     </div>
                 </div>
@@ -73,7 +75,7 @@
                         <span>Album for my lovelybebe (Mixed)</span>
                     </div>
                     <div class="action-buttons">
-                        <a href="https://open.spotify.com/playlist/2wUQVCOvIBqvUElyz5D4El?si=KEZ_ZTVCThCQYU2-dnCrOQ" target="_blank" class="action-btn">Open</a>
+                        <a href="https://open.spotify.com/playlist/2wUQVCOvIBqvUElyz5D4El?si=KEZ_ZTVCThCQYU2-dnCrOQ" target="_blank" rel="noopener" class="action-btn">Open</a>
                         <button onclick="copyToClipboard('https://open.spotify.com/playlist/2wUQVCOvIBqvUElyz5D4El?si=KEZ_ZTVCThCQYU2-dnCrOQ', this)" class="action-btn btn-outline">Copy Link</button>
                     </div>
                 </div>
@@ -83,18 +85,18 @@
 
         <div class="glass-card">
             <h2>Dedicate a Song 💌</h2>
-            <p style="margin-bottom: 20px; font-size: 0.95rem;">Did a song remind you of me today. Drop it here, lovey</p>
+            <p class="card-lead">Did a song remind you of me today. Drop it here, lovey</p>
             
-            <div class="dedicate-container">
-                <input type="text" id="songInput" class="secret-input" placeholder="Type a song title, cutie">
-                <button class="action-btn" style="padding: 12px 25px;" onclick="dedicateSong()">Send</button>
-            </div>
+            <form class="dedicate-container" onsubmit="dedicateSong(); return false;">
+                <input type="text" id="songInput" class="input" placeholder="Type a song title, cutie" aria-label="Song title">
+                <button class="btn" type="submit">Send</button>
+            </form>
 
             <div id="dedicated-list" class="album-list"></div>
         </div>
-    </div>
+    </main>
 
-    <div id="tulip-garden" class="garden-container"></div>
+    <div id="tulip-garden" class="garden-container" aria-hidden="true"></div>
 
 </body>
 </html>

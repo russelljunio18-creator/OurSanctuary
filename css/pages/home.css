@@ -101,3 +101,4 @@
 .letter p { margin-bottom: 1em; }
 .letter__greeting { font-size: 1.5rem; font-weight: 700; color: var(--purple-deep); }
 .letter__sign { text-align: right; font-weight: 700; color: var(--purple-deep); margin: 0; }
+body[data-page="home"] .container { padding-bottom: 120px; }

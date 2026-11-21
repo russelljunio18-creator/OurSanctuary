@@ -1,39 +1,52 @@
 /* music.html — shared helpers live in js/common.js */
 
-// --- 1. SCROLL ANIMATION ---
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.glass-card').forEach(card => {
-    observer.observe(card);
-});
-
 // --- 2. MUSIC PLAYER LOGIC ---
 const audio = document.getElementById("myAudio");
 const playBtn = document.getElementById("playBtn");
 const progress = document.getElementById("progress");
 
+const player = document.getElementById("player");
+
+function formatTime(seconds) {
+    if (!isFinite(seconds)) return "0:00";
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ":" + String(s).padStart(2, "0");
+}
+
+function setPlayingUI(isPlaying) {
+    playBtn.innerText = isPlaying ? "⏸" : "▶";
+    playBtn.setAttribute("aria-label", isPlaying ? "Pause" : "Play");
+    player.classList.toggle("playing", isPlaying);
+}
+
 function togglePlay() {
     if (audio.paused) {
         audio.play();
-        playBtn.innerText = "⏸";
+        setPlayingUI(true);
     } else {
         audio.pause();
-        playBtn.innerText = "▶";
+        setPlayingUI(false);
     }
 }
+audio.addEventListener("loadedmetadata", () => {
+    document.getElementById("time-total").innerText = formatTime(audio.duration);
+});
 audio.addEventListener("timeupdate", () => {
     const percentage = (audio.currentTime / audio.duration) * 100;
     progress.style.width = percentage + "%";
+    document.getElementById("time-now").innerText = formatTime(audio.currentTime);
 });
 audio.addEventListener("ended", () => {
-    playBtn.innerText = "▶";
+    setPlayingUI(false);
     progress.style.width = "0%";
+});
+
+// Tap the bar to jump to that part of the song
+document.getElementById("seek").addEventListener("click", (e) => {
+    if (!isFinite(audio.duration)) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
 });
 
 // --- 3. COPY TO CLIPBOARD LOGIC ---
@@ -41,13 +54,11 @@ function copyToClipboard(link, buttonElement) {
     navigator.clipboard.writeText(link).then(() => {
         const originalText = buttonElement.innerText;
         buttonElement.innerText = "Copied ✔";
-        buttonElement.style.background = "var(--primary-purple)";
-        buttonElement.style.color = "white";
-        
+        buttonElement.classList.add("copied");
+
         setTimeout(() => {
             buttonElement.innerText = originalText;
-            buttonElement.style.background = "transparent";
-            buttonElement.style.color = "var(--primary-purple)";
+            buttonElement.classList.remove("copied");
         }, 2000);
     }).catch(err => {
         console.error('Failed to copy: ', err);
@@ -82,13 +93,14 @@ function dedicateSong() {
 function addSongToScreen(songName) {
     const list = document.getElementById('dedicated-list');
     const newSongDiv = document.createElement('div');
-    newSongDiv.className = 'album-item';
+    newSongDiv.className = 'album-item new';
     newSongDiv.innerHTML = `
         <div class="album-info">
-            <strong>${songName}</strong>
+            <strong></strong>
             <span>Dedicated by my beautiful princess 💜</span>
         </div>
     `;
+    newSongDiv.querySelector('strong').textContent = songName; // shown as plain text
     // Adds the newest song right at the top of the list
     list.insertBefore(newSongDiv, list.firstChild);
 }
@@ -116,38 +128,3 @@ function spawnMusicNotes() {
         }, i * 150);
     }
 }
-
-// --- 5. GARDEN GENERATION ---
-window.addEventListener('DOMContentLoaded', () => {
-    const garden = document.getElementById('tulip-garden');
-    const tulipCount = 35; 
-    const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
-
-    for (let i = 0; i < tulipCount; i++) {
-        const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        const randomX = Math.random() * 100;
-        const randomHeight = 120 + Math.random() * 180;
-        const randomDelay = Math.random() * -5;
-        const randomSpeed = 4 + Math.random() * 2;
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-        tulip.setAttribute("viewBox", "0 0 50 150");
-        tulip.style.cssText = `
-            position: absolute;
-            bottom: -20px;
-            left: ${randomX}%;
-            height: ${randomHeight}px;
-            z-index: ${Math.floor(randomHeight)};
-            transform-origin: bottom center;
-            animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
-            filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
-        `;
-
-        tulip.innerHTML = `
-            <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
-            <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
-            <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
-        `;
-        garden.appendChild(tulip);
-    }
-});
