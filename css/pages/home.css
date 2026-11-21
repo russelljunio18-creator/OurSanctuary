@@ -1,0 +1,113 @@
+/* Home page (index.html) */
+
+.home-hero { padding-top: 56px; padding-bottom: 32px; animation: hero-in 1.4s var(--ease) both; }
+.greeting {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--purple-deep);
+  margin-top: 14px;
+  min-height: 1.5em;
+}
+@keyframes hero-in { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+
+.lead { color: var(--plum-soft); margin-bottom: 20px; }
+.since { font-size: 0.85rem; color: var(--plum-soft); margin: 16px 0 0; }
+
+/* Live counters */
+.timer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (min-width: 560px) { .timer-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.time-box {
+  background: var(--surface-strong);
+  border: 1px solid var(--lavender-100);
+  padding: 14px 6px 10px;
+  border-radius: var(--radius-sm);
+}
+.time-num {
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--purple-deep);
+  font-variant-numeric: tabular-nums;
+}
+.time-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--plum-soft); font-weight: 700; }
+
+/* Special dates calendar */
+.cal-head { display: flex; justify-content: space-between; align-items: center; }
+.cal-head h3 { margin: 0; color: var(--purple-deep); font-size: 1.45rem; }
+.cal-nav-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--lavender-100);
+  color: var(--purple-deep);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.cal-nav-btn:hover { background: var(--lavender-200); }
+
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 18px; }
+.cal-header { font-weight: 800; font-size: 0.7rem; color: var(--purple); padding-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+.cal-day {
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 46px;
+  margin: 0 auto;
+  display: flex; justify-content: center; align-items: center;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--plum);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s;
+}
+.cal-day.empty { background: transparent; }
+
+.date-bday       { background: #fecdd3; color: #881337; }
+.date-anniv      { background: var(--purple); color: #fff; }
+.date-monthsary  { background: var(--lavender-200); color: var(--plum); }
+.date-valentines { background: #fbcfe8; color: #831843; }
+.date-sweater    { background: #bae6fd; color: #0c4a6e; }
+.date-christmas  { background: #bbf7d0; color: #14532d; }
+
+.clickable { cursor: pointer; }
+.clickable:hover { transform: scale(1.12); box-shadow: 0 6px 14px rgba(124, 58, 237, 0.25); }
+.clickable:active { transform: scale(0.94); }
+.today-highlight { outline: 2px solid var(--purple); outline-offset: 1px; }
+
+/* Hidden note */
+.lock { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.secret-input { max-width: 220px; text-align: center; letter-spacing: 0.3em; }
+.pass-hint { min-height: 1.4em; margin: 0; color: var(--rose); font-weight: 600; font-size: 0.92rem; }
+.pass-hint.shake { animation: shake 0.4s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+.letter {
+  text-align: left;
+  padding: clamp(20px, 5vw, 32px);
+  background: var(--surface-strong);
+  border-radius: var(--radius);
+  border: 1px solid var(--lavender-100);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.7;
+  animation: modal-in 0.6s var(--ease);
+}
+.letter p { margin-bottom: 1em; }
+.letter__greeting { font-size: 1.5rem; font-weight: 700; color: var(--purple-deep); }
+.letter__sign { text-align: right; font-weight: 700; color: var(--purple-deep); margin: 0; }
+
+/* Tulips along the bottom of the screen */
+.garden-container {
+  position: fixed;
+  bottom: 0; left: 0; width: 100%; height: 40vh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+}
+@keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
