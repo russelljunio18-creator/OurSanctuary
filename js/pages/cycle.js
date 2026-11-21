@@ -1,18 +1,5 @@
 /* cycle.html — shared helpers live in js/common.js */
 
-// --- 1. SCROLL ANIMATION ---
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.glass-card').forEach(card => {
-    observer.observe(card);
-});
-
 // --- 2. CYCLE LOGIC (HARDCODED DATES) ---
 // Her known start date is Feb 1, 2026. Months are 0-indexed in JS (0=Jan, 1=Feb)
 const HARDCODED_START = new Date(2026, 1, 1, 0, 0, 0, 0); 
@@ -156,7 +143,7 @@ function openCareModal(type) {
 
     if (type === 'cramps') {
         content = `
-            <h2 style="color:var(--primary-purple); font-family:'Georgia', serif; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Relieving your cramps</h2>
+            <h2 style="color:var(--primary-purple); font-family:var(--font-display); border-bottom: 1px solid #ddd; padding-bottom: 10px;">Relieving your cramps</h2>
             <p style="font-style:italic;">I hate that you are in pain baby. Let me help you feel a little better.</p>
             
             <div class="virtual-compress">♨️</div>
@@ -171,7 +158,7 @@ function openCareModal(type) {
         `;
     } else if (type === 'sweets') {
         content = `
-            <h2 style="color:var(--primary-purple); font-family:'Georgia', serif; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Your sweet cravings</h2>
+            <h2 style="color:var(--primary-purple); font-family:var(--font-display); border-bottom: 1px solid #ddd; padding-bottom: 10px;">Your sweet cravings</h2>
             <p style="font-style:italic;">Tap a chocolate piece to reveal a sweet truth about you my pretty baby.</p>
             <div class="choc-grid">
                 <div class="choc-piece" onclick="this.className='choc-piece choc-revealed'; this.innerText='You have the most beautiful smile in the world'">Tap to eat 🍫</div>
@@ -182,7 +169,7 @@ function openCareModal(type) {
         `;
     } else if (type === 'moody') {
         content = `
-            <h2 style="color:var(--primary-purple); font-family:'Georgia', serif; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Let it all out baby</h2>
+            <h2 style="color:var(--primary-purple); font-family:var(--font-display); border-bottom: 1px solid #ddd; padding-bottom: 10px;">Let it all out baby</h2>
             <p style="font-style:italic;">If you are feeling frustrated or overwhelmed, type it all out right here. Nobody will read it.</p>
             <textarea class="vent-area" id="ventBox" placeholder="Type whatever is bothering you..."></textarea>
             <button class="btn" style="width:100%; margin-top:15px;" onclick="burnThoughts()">Release it to the universe ✨</button>
@@ -191,7 +178,7 @@ function openCareModal(type) {
     }
 
     // Append the close button dynamically so it isn't overwritten
-    careBody.innerHTML = `<span class="close-btn" onclick="closeCareModal()">✖</span>` + content;
+    careBody.innerHTML = `<button class="close-btn" onclick="closeCareModal()" aria-label="Close">✕</button>` + content;
     
     careModal.style.display = 'flex';
     setTimeout(() => { careModal.classList.add('active'); }, 10);

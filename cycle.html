@@ -16,8 +16,8 @@
 <body data-page="cycle">
 
 
-    <div class="container">
-        <header>
+    <main class="container">
+        <header class="page-hero">
             <h1>Your Rhythm</h1>
             <div class="subtitle">Because taking care of you is my favorite job 🌸</div>
         </header>
@@ -25,7 +25,7 @@
         <div class="glass-card" id="dashboard-card">
             <h2>Today is Phase</h2>
             
-            <p style="font-size: 0.95rem; margin-bottom: 25px;">I saved your dates so you never have to worry about tracking them yourself again baby.</p>
+            <p class="card-lead">I saved your dates so you never have to worry about tracking them yourself again baby.</p>
 
             <div class="status-circle" id="circle-bg">
                 <span class="day-number" id="cycleDay">1</span>
@@ -40,12 +40,12 @@
 
         <div class="glass-card">
             <h2>Your Rhythm Calendar 📅</h2>
-            <p style="font-size: 0.95rem; margin-bottom: 20px;">See exactly what phase you will be in to plan our dates lovey.</p>
+            <p class="card-lead">See exactly what phase you will be in to plan our dates lovey.</p>
             
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <button class="cal-nav-btn" onclick="changeMonth(-1)">❮</button>
-                <h3 id="month-title" style="margin: 0; color: var(--primary-purple); font-family: 'Georgia', serif; font-size: 1.3rem;">Month Year</h3>
-                <button class="cal-nav-btn" onclick="changeMonth(1)">❯</button>
+            <div class="cal-head">
+                <button class="cal-nav-btn" onclick="changeMonth(-1)" aria-label="Previous month">❮</button>
+                <h3 id="month-title">Month Year</h3>
+                <button class="cal-nav-btn" onclick="changeMonth(1)" aria-label="Next month">❯</button>
             </div>
 
             <div class="cal-grid" id="calendar-grid">
@@ -61,7 +61,7 @@
 
         <div class="glass-card">
             <h2>Understanding Your Rhythm 📖</h2>
-            <p style="font-size: 0.95rem; margin-bottom: 20px;">A little guide to what your beautiful body is doing in each phase.</p>
+            <p class="card-lead">A little guide to what your beautiful body is doing in each phase.</p>
 
             <div class="explanation-item border-period">
                 <div class="exp-title"><span class="legend-dot phase-period"></span> Rest and Recover (Days 1-5)</div>
@@ -86,23 +86,22 @@
 
         <div class="glass-card">
             <h2>Virtual Care Package 🧸</h2>
-            <p style="font-size: 0.95rem; margin-bottom: 20px;">Whenever you need a little extra comfort baby</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+            <p class="card-lead">Whenever you need a little extra comfort baby</p>
+            <div class="care-buttons">
                 <button class="btn" onclick="openCareModal('cramps')">Cramps hurt ♨️</button>
                 <button class="btn" onclick="openCareModal('sweets')">Need sweets 🍫</button>
                 <button class="btn" onclick="openCareModal('moody')">Feeling moody 🫂</button>
             </div>
         </div>
 
-    </div>
+    </main>
 
     <div class="modal-overlay" id="careModal" onclick="closeCareModal()">
         <div class="modal-content" id="care-modal-body" onclick="event.stopPropagation()">
-            <span class="close-btn" onclick="closeCareModal()">✖</span>
-            </div>
+        </div>
     </div>
 
-    <div id="tulip-garden" class="garden-container"></div>
+    <div id="tulip-garden" class="garden-container" aria-hidden="true"></div>
 
 </body>
 </html>
