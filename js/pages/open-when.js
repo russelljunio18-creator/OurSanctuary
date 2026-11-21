@@ -369,6 +369,7 @@ function openLetter(type) {
     document.getElementById('rain-container').innerHTML = '';
 
     modalBody.innerHTML = letters[type];
+    markOpened(type);
     modal.style.display = 'flex';
     setTimeout(() => { modal.classList.add('active'); }, 10);
 }
@@ -402,37 +403,29 @@ document.querySelectorAll('.envelope-card').forEach(card => {
     observer.observe(card);
 });
 
-// --- 4. GARDEN GENERATION (Background) ---
-window.addEventListener('DOMContentLoaded', () => {
-    const garden = document.getElementById('tulip-garden');
-    const tulipCount = 35; 
-    const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
+// --- 4. REMEMBER WHICH LETTERS SHE HAS OPENED (small ✓ on the envelope) ---
+function getOpened() {
+    try { return JSON.parse(localStorage.getItem('openedLetters')) || []; } catch (e) { return []; }
+}
+function markOpened(type) {
+    const opened = getOpened();
+    if (!opened.includes(type)) opened.push(type);
+    try { localStorage.setItem('openedLetters', JSON.stringify(opened)); } catch (e) {}
+    showOpened();
+}
+function showOpened() {
+    const opened = getOpened();
+    document.querySelectorAll('.envelope-card').forEach(card => {
+        const type = (card.getAttribute('onclick').match(/'(.+?)'/) || [])[1];
+        card.classList.toggle('opened', opened.includes(type));
+    });
+}
+showOpened();
 
-    for (let i = 0; i < tulipCount; i++) {
-        const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        const randomX = Math.random() * 100;
-        const randomHeight = 120 + Math.random() * 180;
-        const randomDelay = Math.random() * -5;
-        const randomSpeed = 4 + Math.random() * 2;
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-        tulip.setAttribute("viewBox", "0 0 50 150");
-        tulip.style.cssText = `
-            position: absolute;
-            bottom: -20px;
-            left: ${randomX}%;
-            height: ${randomHeight}px;
-            z-index: ${Math.floor(randomHeight)};
-            transform-origin: bottom center;
-            animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
-            filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
-        `;
-
-        tulip.innerHTML = `
-            <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
-            <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
-            <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
-        `;
-        garden.appendChild(tulip);
-    }
+// Keyboard: Enter opens an envelope, Escape closes the letter
+document.querySelectorAll('.envelope-card').forEach(card => {
+    card.addEventListener('keydown', e => { if (e.key === 'Enter') card.click(); });
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) closeLetter(e);
 });

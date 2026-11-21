@@ -109,6 +109,8 @@ button, input, textarea, select { font: inherit; color: inherit; }
   padding: 0 var(--gutter) 24px;
 }
 
+.container.wide { max-width: 1040px; }
+
 .page-hero {
   text-align: center;
   padding: 40px var(--gutter) 28px;

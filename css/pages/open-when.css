@@ -1,186 +1,100 @@
-/* open-when.html */
+/* open-when.html — envelopes and the letters inside them */
 
-/* --- 1. UNIFIED DREAMY PALETTE --- */
-:root {
-    --primary-purple: #9333ea;
-    --bg-top: #f5d0fe;
-    --bg-bottom: #701a75;
-    --text-main: #4a044e;
-    --glass: rgba(255, 255, 255, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.4);
-}
+.page-hint { text-align: center; color: var(--plum-soft); font-size: 0.9rem; margin: -10px 0 22px; }
 
-body {
-    background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-attachment: fixed;
-    color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden;
-}
-
-/* --- 2. FLOATING NAVIGATION --- */
-nav {
-    position: sticky;
-    top: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    padding: 12px 30px;
-    border-radius: 50px;
-    margin-top: 20px;
-    z-index: 1000;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 85%;
-    max-width: 600px;
-}
-
-nav a {
-    text-decoration: none;
-    color: var(--text-main);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    transition: color 0.3s ease;
-    white-space: nowrap;
-}
-
-nav a:hover { color: var(--primary-purple); }
-
-/* --- 3. HEADER & LAYOUT --- */
-.container {
-    width: 90%;
-    max-width: 900px;
-    margin-top: 40px;
-    padding-bottom: 150px;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 40px;
-    animation: fadeIn 2s ease;
-}
-
-h1 {
-    font-size: 3rem;
-    margin: 0;
-    color: #581c87;
-    font-family: 'Georgia', serif;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    font-style: italic;
-    opacity: 0.8;
-    margin-top: 10px;
-}
-
-/* --- 4. ENVELOPE GRID --- */
+/* Envelope grid */
 .envelope-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 25px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
+@media (min-width: 640px) { .envelope-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 900px) { .envelope-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .envelope-card {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 40px 20px;
-    text-align: center;
-    cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    opacity: 0;
-    transform: translateY(30px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 150px;
+  padding: 26px 12px 18px;
+  text-align: center;
+  cursor: pointer;
+  background: #fffdf8;
+  border: 1px solid var(--lavender-100);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s var(--ease), transform 0.4s var(--ease), box-shadow 0.3s;
 }
-
-.envelope-card.visible { opacity: 1; transform: translateY(0); }
-
+/* the envelope flap */
+.envelope-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 46px;
+  background: linear-gradient(160deg, var(--lavender-100), var(--rose-soft));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  opacity: 0.85;
+  transition: transform 0.4s var(--ease);
+  transform-origin: top;
+}
+.envelope-card.visible { opacity: 1; transform: none; }
+.envelope-card:active { transform: scale(0.97); }
 @media (hover: hover) {
-    .envelope-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        background: rgba(255, 255, 255, 0.4);
-        border-color: var(--primary-purple);
-        box-shadow: 0 15px 35px rgba(147, 51, 234, 0.2);
-    }
+  .envelope-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+  .envelope-card:hover::before { transform: scaleY(-1); }
 }
+.envelope-card.opened .envelope-title::after { content: ' ✓'; color: var(--leaf); }
 
-.envelope-icon { font-size: 4rem; margin-bottom: 15px; display: block; }
-.envelope-title { font-family: 'Georgia', serif; font-size: 1.2rem; font-weight: bold; color: #581c87; line-height: 1.3; }
-
-/* --- 5. THE MODAL (POP-UP LETTER) --- */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(74, 4, 78, 0.6);
-    backdrop-filter: blur(8px);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+.envelope-icon { position: relative; font-size: 2.4rem; line-height: 1; margin-top: 10px; }
+.envelope-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--plum);
 }
+.envelope-title::before { content: 'Open when '; display: block; font-family: var(--font-body); font-size: 0.66rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--purple); margin-bottom: 4px; }
 
-.modal-content {
-    background: #fffdf5; /* A slightly warmer, paper-like color */
-    width: 90%;
-    max-width: 550px;
-    border-radius: 20px;
-    padding: 40px;
-    position: relative;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-    transform: scale(0.8);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
-    max-height: 85vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-purple) transparent;
-}
-
-.modal-content::-webkit-scrollbar { width: 8px; }
-.modal-content::-webkit-scrollbar-thumb { background-color: var(--primary-purple); border-radius: 10px; }
-
+/* The letter pop-up */
+.modal-overlay { opacity: 0; transition: opacity 0.3s ease; }
 .modal-overlay.active { opacity: 1; }
-.modal-overlay.active .modal-content { transform: scale(1); }
-
-.close-btn {
-    position: absolute;
-    top: 15px; right: 20px;
-    font-size: 1.5rem;
-    color: #aaa;
-    cursor: pointer;
-    transition: 0.3s;
-    z-index: 10;
+.modal-content {
+  max-width: 560px;
+  background: #fffdf8;
+  color: #444;
+  padding: 44px clamp(20px, 6vw, 40px) 32px;
+  overflow-x: hidden;
+  transform: scale(0.94);
+  transition: transform 0.4s var(--ease), box-shadow 0.5s ease, background 0.6s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lavender-300) transparent;
 }
-.close-btn:hover { color: var(--primary-purple); }
+.modal-overlay.active .modal-content { transform: none; }
+.close-btn { z-index: 10; }
 
 .letter-text {
-    font-family: 'Georgia', serif;
-    line-height: 1.8;
-    color: #444;
-    font-size: 1.05rem;
-    text-align: justify;
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.75;
 }
-
-.letter-text h2 { color: #6b21a8; border-bottom: 1px solid rgba(147, 51, 234, 0.2); padding-bottom: 10px; margin-top: 0; margin-bottom: 20px; font-size: 1.5rem; line-height: 1.3;}
-.letter-text p { margin-bottom: 15px; }
+.letter-text h2 {
+  font-size: 1.7rem;
+  color: var(--purple-deep);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  margin: 0 0 18px;
+  line-height: 1.2;
+}
+.letter-text p { margin-bottom: 14px; }
+.letter-text button, .letter-text input, .letter-text label { font-family: var(--font-body); font-size: 1rem; }
 
 /* --- 6. UNIQUE INTERACTIVE FEATURES CSS --- */
 .feature-btn {
@@ -192,7 +106,7 @@ h1 {
     border: none;
     border-radius: 25px;
     font-weight: bold;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     cursor: pointer;
     transition: 0.3s;
     box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
@@ -200,12 +114,12 @@ h1 {
     width: 80%;
     max-width: 250px;
 }
-.feature-btn:hover { background-color: #7e22ce; transform: translateY(-3px); }
+.feature-btn:hover { background-color: var(--purple-deep); transform: translateY(-3px); }
 
 /* 4-7-8 Breathing Animation */
 .breathe-circle {
     width: 80px; height: 80px;
-    background: var(--bg-top);
+    background: var(--lavender-100);
     border-radius: 50%;
     margin: 30px auto;
     border: 2px solid var(--primary-purple);
@@ -217,7 +131,7 @@ h1 {
     font-size: 0.8rem;
     color: var(--primary-purple);
     font-weight: bold;
-    font-family: sans-serif;
+    font-family: var(--font-body);
     position: relative;
 }
 .breathe-circle::after {
@@ -323,27 +237,8 @@ h1 {
 .choc-piece:hover { background: radial-gradient(circle at 30% 30%, #5d4037, #21130d); transform: translateY(-3px); }
 .choc-revealed { background: rgba(245, 208, 254, 0.5); color: var(--primary-purple); border: 1px solid var(--primary-purple); box-shadow: none; font-size: 0.9rem; font-style: italic; }
 
-/* --- 7. MOBILE RESPONSIVENESS --- */
 @media (max-width: 600px) {
-    h1 { font-size: 2.2rem; }
-    nav { margin-top: 20px; padding: 12px 15px; }
-    .envelope-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-    .envelope-card { padding: 25px 10px; }
-    .envelope-icon { font-size: 3rem; margin-bottom: 10px; }
-    .envelope-title { font-size: 1rem; }
-    .modal-content { padding: 30px 20px; width: 85%; }
-    .letter-text h2 { font-size: 1.3rem; }
-    .letter-text p { font-size: 0.95rem; }
-    .feature-btn { width: 100%; }
-    .mini-gallery img { height: 100px; }
+  .envelope-title { font-size: 1.1rem; }
+  .feature-btn { width: 100%; }
+  .mini-gallery img { height: 110px; }
 }
-
-/* --- 8. GARDEN CONTAINER --- */
-.garden-container {
-    position: fixed;
-    bottom: 0; left: 0; width: 100%; height: 45vh;
-    z-index: -1; pointer-events: none;
-    display: flex; align-items: flex-end;
-}
-@keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }

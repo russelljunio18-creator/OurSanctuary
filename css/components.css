@@ -176,9 +176,11 @@
   margin-top: 0;
 }
 .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  /* stays in view while a long letter scrolls */
+  position: sticky;
+  top: 0;
+  float: right;
+  margin: -22px -12px 0 8px;
   width: 40px;
   height: 40px;
   display: grid;
