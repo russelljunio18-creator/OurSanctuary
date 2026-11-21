@@ -353,3 +353,6 @@ body.day-mode .topbar { background: rgba(255, 255, 255, 0.4); border-bottom-colo
 /* Keep the bouquet card readable over the flowers */
 .bouquet-card { background: rgba(20, 10, 35, 0.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 body.day-mode .bouquet-card { background: rgba(255, 255, 255, 0.7); }
+
+/* The scene is full-screen; never scroll sideways */
+html { overflow: hidden; }
