@@ -13,7 +13,7 @@
     <script src="js/common.js" defer></script>
     <script src="js/pages/garden.js" defer></script>
 </head>
-<body data-page="garden">
+<body data-page="garden" data-no-next>
 
 
     <div class="helper-text">Tap the grass to plant purple tulips in our future garden my love</div>
@@ -60,15 +60,16 @@
     <div class="bouquet-card">
         <p>Your special bouquet</p>
         <div class="bouquet-flowers">
-            <div class="bouquet-tulip" onclick="openNote(0)">🌷</div>
-            <div class="bouquet-tulip" onclick="openNote(1)">🌷</div>
-            <div class="bouquet-tulip" onclick="openNote(2)">🌷</div>
+            <div class="bouquet-tulip" role="button" tabindex="0" onclick="openNote(0)">🌷</div>
+            <div class="bouquet-tulip" role="button" tabindex="0" onclick="openNote(1)">🌷</div>
+            <div class="bouquet-tulip" role="button" tabindex="0" onclick="openNote(2)">🌷</div>
         </div>
+        <a class="bouquet-link" href="bouquet.html">See your whole bouquet →</a>
     </div>
 
     <div class="modal-overlay" id="noteModal" onclick="closeNote()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-btn" onclick="closeNote()">✖</span>
+            <button class="close-btn" onclick="closeNote()" aria-label="Close">✕</button>
             <div id="note-body"></div>
         </div>
     </div>
