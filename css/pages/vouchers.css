@@ -1,0 +1,98 @@
+/* vouchers.html — love coupons */
+
+.voucher-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 680px) { .voucher-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* A ticket: icon stub on the left, details on the right, notches in between */
+.voucher {
+  position: relative;
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 18px;
+  padding: 20px 20px 18px 0;
+  background:
+    radial-gradient(circle at 79px 0, var(--notch) 9px, transparent 10px),
+    radial-gradient(circle at 79px 100%, var(--notch) 9px, transparent 10px),
+    #fffdf8;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: left;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: transform 0.4s var(--ease), opacity 0.6s var(--ease), box-shadow 0.3s;
+  --notch: var(--lavender-50);
+}
+.voucher.visible { opacity: 1; transform: none; }
+@media (hover: hover) { .voucher:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); } }
+
+/* perforated divider + notches */
+.voucher::before {
+  content: '';
+  position: absolute;
+  top: 14px; bottom: 14px; left: 78px;
+  border-left: 2px dashed var(--lavender-200);
+}
+
+
+.voucher-icon {
+  grid-row: 1 / 4;
+  align-self: center;
+  justify-self: center;
+  font-size: 2.2rem;
+}
+.voucher-title {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--purple-deep);
+  margin-bottom: 4px;
+}
+.voucher-desc { font-size: 0.92rem; color: var(--plum-soft); line-height: 1.5; margin-bottom: 14px; }
+
+.redeem-btn {
+  justify-self: start;
+  min-height: 40px;
+  padding: 8px 22px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--purple), var(--purple-deep));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease), filter 0.2s;
+}
+.redeem-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+.voucher.redeemed { pointer-events: none; }
+.voucher.redeemed > *:not(.voucher-stamp) { opacity: 0.45; }
+.voucher.redeemed .redeem-btn { background: var(--plum-soft); }
+.voucher-stamp {
+  position: absolute;
+  right: 18px; bottom: 22px;
+  padding: 4px 12px;
+  border: 2px solid var(--rose);
+  border-radius: 8px;
+  color: var(--rose);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  animation: stamp 0.4s var(--ease);
+}
+@keyframes stamp { from { transform: rotate(-8deg) scale(1.8); opacity: 0; } to { transform: rotate(-8deg) scale(1); opacity: 1; } }
+
+/* Redeemed pop-up */
+.modal-overlay { opacity: 0; transition: opacity 0.3s ease; }
+.modal-overlay.active { opacity: 1; }
+.modal-content { max-width: 420px; text-align: center; transform: scale(0.94); transition: transform 0.3s var(--ease); }
+.modal-overlay.active .modal-content { transform: none; }
+.modal-content p { font-family: var(--font-display); font-style: italic; font-size: 1.25rem; line-height: 1.55; margin-bottom: 0; }

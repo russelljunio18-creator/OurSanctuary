@@ -1,0 +1,145 @@
+/* =========================================================
+   OurSanctuary — base styles
+   Colors, fonts and spacing live here as variables ("tokens").
+   Change a value once and every page follows.
+   ========================================================= */
+
+:root {
+  /* Palette — soft & dreamy */
+  --cream: #fdf8ff;
+  --lavender-50: #faf5ff;
+  --lavender-100: #f3e8ff;
+  --lavender-200: #e9d5ff;
+  --lavender-300: #d8b4fe;
+  --purple: #7c3aed;          /* primary */
+  --purple-deep: #5b21b6;
+  --plum: #3b0a45;            /* main text */
+  --plum-soft: #6b4a7a;       /* secondary text */
+  --rose: #db5d93;
+  --rose-soft: #fbcfe8;
+  --leaf: #5fb87a;
+
+  --surface: rgba(255, 255, 255, 0.62);
+  --surface-strong: rgba(255, 255, 255, 0.85);
+  --surface-border: rgba(255, 255, 255, 0.9);
+  --line: rgba(124, 58, 237, 0.14);
+
+  /* Type */
+  --font-display: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+  --font-body: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Shape & depth */
+  --radius-sm: 12px;
+  --radius: 20px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+  --shadow: 0 14px 40px -16px rgba(76, 29, 149, 0.28);
+  --shadow-lift: 0 22px 50px -18px rgba(76, 29, 149, 0.4);
+
+  /* Spacing */
+  --gutter: 16px;
+  --content-width: 760px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Older names used by page styles — mapped onto the new palette */
+  --primary-purple: var(--purple);
+  --text-main: var(--plum);
+  --text-light: var(--purple-deep);
+  --deep-purple: var(--plum);
+  --soft-purple: var(--lavender-300);
+  --glass: var(--surface);
+  --glass-border: var(--surface-border);
+  --accent-green: var(--leaf);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--plum);
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(60vmax 50vmax at 0% 0%, rgba(233, 213, 255, 0.75), transparent 60%),
+    radial-gradient(50vmax 40vmax at 100% 10%, rgba(251, 207, 232, 0.55), transparent 60%),
+    radial-gradient(70vmax 50vmax at 50% 110%, rgba(216, 180, 254, 0.6), transparent 60%),
+    linear-gradient(180deg, var(--cream), var(--lavender-100));
+  background-attachment: fixed;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--plum);
+  letter-spacing: 0.005em;
+}
+h1 { font-size: clamp(2.6rem, 8vw, 4rem); margin: 0; }
+h2 { font-size: clamp(1.6rem, 4.5vw, 2rem); margin: 0 0 0.75em; }
+h3 { font-size: 1.35rem; margin: 0 0 0.5em; }
+
+p { margin: 0 0 1em; }
+
+a { color: var(--purple); }
+
+button, input, textarea, select { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection { background: var(--lavender-300); color: var(--plum); }
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 24px;
+}
+
+.container.wide { max-width: 1040px; }
+
+.page-hero {
+  text-align: center;
+  padding: 40px var(--gutter) 28px;
+}
+.page-hero .eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--purple);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.page-hero .subtitle,
+.subtitle {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--plum-soft);
+  margin-top: 8px;
+}
+
+.muted { color: var(--plum-soft); font-size: 0.9rem; }
+
+/* Respect people who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

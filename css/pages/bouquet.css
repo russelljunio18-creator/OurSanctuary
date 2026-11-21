@@ -1,0 +1,73 @@
+/* bouquet.html — the real bouquet + tappable tulips */
+
+.card-lead { color: var(--plum-soft); font-size: 0.95rem; margin-bottom: 8px; }
+
+/* Photo of the real bouquet */
+.bouquet-photo { margin: 0 auto 32px; max-width: 420px; text-align: center; }
+.bouquet-photo__frame {
+  position: relative;
+  padding: 12px;
+  border-radius: 32px;
+  background: linear-gradient(145deg, #fff, var(--lavender-100));
+  box-shadow: var(--shadow-lift);
+  transform: rotate(-1.5deg);
+  animation: float 7s ease-in-out infinite;
+}
+.bouquet-photo__frame::after {
+  /* soft gold ribbon corner, echoing the wrapping paper */
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 28px;
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  pointer-events: none;
+}
+.bouquet-photo img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 22px;
+}
+.bouquet-photo figcaption {
+  margin-top: 22px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--plum-soft);
+}
+@keyframes float { 50% { transform: rotate(-0.5deg) translateY(-6px); } }
+
+/* Tappable tulips */
+.tulip-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px 6px;
+  padding-top: 12px;
+}
+.tulip {
+  width: 50px;
+  height: 140px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transform-origin: bottom center;
+  animation: sway 4.5s ease-in-out var(--delay, 0s) infinite;
+  transition: filter 0.3s;
+}
+.tulip svg { width: 100%; height: 100%; overflow: visible; transition: transform 0.35s var(--ease); }
+.tulip:hover svg, .tulip:focus-visible svg { transform: translateY(-8px) scale(1.06); }
+.tulip:active svg { transform: scale(0.95); }
+.tulip.read { filter: saturate(0.7) opacity(0.75); }
+.tulip:focus-visible { outline: none; }
+.tulip:focus-visible svg { filter: drop-shadow(0 0 6px var(--purple)); }
+
+/* The note */
+.modal-overlay { opacity: 0; transition: opacity 0.3s ease; }
+.modal-overlay.active { opacity: 1; }
+.modal-content { max-width: 420px; text-align: center; background: #fffdf8; transform: scale(0.94); transition: transform 0.3s var(--ease); }
+.modal-overlay.active .modal-content { transform: none; }
+.tulip-note h2 { color: var(--purple-deep); }
+.tulip-note p { font-family: var(--font-display); font-style: italic; font-size: 1.3rem; line-height: 1.6; margin: 0; }

@@ -1,0 +1,184 @@
+/* cycle.html — today's phase, rhythm calendar, guide, care package */
+
+.card-lead { color: var(--plum-soft); font-size: 0.95rem; margin-bottom: 20px; }
+
+/* --- Today --- */
+.status-circle {
+  width: 150px; height: 150px;
+  margin: 10px auto 0;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--lavender-100);
+  border: 6px solid #fff;
+  box-shadow: 0 0 0 2px var(--lavender-300), var(--shadow-lift);
+  transition: background 0.5s ease;
+}
+.day-number { font-size: 3.2rem; font-weight: 800; color: var(--purple-deep); line-height: 1; }
+.day-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; margin-top: 4px; color: var(--plum); }
+.phase-title { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--purple-deep); margin-top: 20px; }
+.phase-message { font-family: var(--font-display); font-size: 1.2rem; font-style: italic; line-height: 1.55; margin-top: 10px; color: var(--plum); }
+.next-period {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-strong);
+  border: 1px solid var(--lavender-200);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* --- Calendar --- */
+.cal-head { display: flex; justify-content: space-between; align-items: center; }
+.cal-head h3 { margin: 0; color: var(--purple-deep); font-size: 1.45rem; }
+.cal-nav-btn {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--lavender-100);
+  color: var(--purple-deep);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cal-nav-btn:hover { background: var(--lavender-200); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 18px; }
+.cal-header { font-weight: 800; font-size: 0.7rem; color: var(--purple); padding-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+.cal-day {
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 46px;
+  margin: 0 auto;
+  display: flex; justify-content: center; align-items: center;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--plum);
+}
+.cal-day.empty { background: transparent; }
+.today-highlight { outline: 2px solid var(--purple); outline-offset: 1px; }
+
+/* Phase colours (calendar, legend and guide) */
+.phase-period { background: #fca5a5; color: #7f1d1d; }
+.phase-glow   { background: #bbf7d0; color: #064e3b; }
+.phase-peak   { background: #fbcfe8; color: #831843; }
+.phase-cuddle { background: var(--lavender-200); color: var(--plum); }
+
+.cal-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; margin-top: 22px; font-size: 0.85rem; font-weight: 700; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+/* --- Guide --- */
+.explanation-item {
+  text-align: left;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  border-left: 5px solid;
+}
+.exp-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+.exp-desc { font-size: 0.95rem; line-height: 1.6; color: var(--plum); }
+.border-period { border-color: #f87171; }
+.border-glow   { border-color: #4ade80; }
+.border-peak   { border-color: #f472b6; }
+.border-cuddle { border-color: var(--purple); }
+
+/* --- Care package --- */
+.care-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.modal-overlay { opacity: 0; transition: opacity 0.3s ease; }
+.modal-overlay.active { opacity: 1; }
+.modal-content { max-width: 420px; text-align: center; background: #fffdf8; transform: scale(0.94); transition: transform 0.3s var(--ease); }
+.modal-overlay.active .modal-content { transform: none; }
+
+/* Care Package Specific Interactive Elements */
+.virtual-compress {
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, #ffb6c1, #f43f5e);
+    border-radius: 30px;
+    margin: 25px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    animation: pulseWarmth 3s infinite alternate;
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.5);
+}
+
+@keyframes pulseWarmth {
+    0% { transform: scale(1); box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
+    100% { transform: scale(1.1); box-shadow: 0 0 40px rgba(244, 63, 94, 0.8); }
+}
+
+.care-checklist {
+    text-align: left;
+    background: var(--lavender-50);
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 20px;
+    border: 1px dashed var(--primary-purple);
+}
+
+.care-checklist label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.care-checklist input[type="checkbox"] {
+    appearance: none; 
+    min-width: 20px; 
+    height: 20px; 
+    border: 2px solid var(--primary-purple); 
+    border-radius: 5px; 
+    display: grid; 
+    place-content: center; 
+    cursor: pointer;
+}
+.care-checklist input[type="checkbox"]::before {
+    content: ""; width: 10px; height: 10px; transform: scale(0); background-color: var(--primary-purple); border-radius: 2px; transition: 120ms transform ease-in-out;
+}
+.care-checklist input[type="checkbox"]:checked::before { transform: scale(1); }
+
+.choc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.choc-piece {
+    background: radial-gradient(circle at 30% 30%, #6d4c41, #3e2723);
+    color: #d7ccc8;
+    padding: 20px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.choc-piece:hover { background: radial-gradient(circle at 30% 30%, #5d4037, #21130d); transform: translateY(-3px); }
+.choc-revealed { background: rgba(245, 208, 254, 0.5); color: var(--primary-purple); border: 1px solid var(--primary-purple); box-shadow: none; font-size: 0.9rem; font-style: italic; }
+
+.vent-area {
+    width: 100%;
+    height: 110px;
+    background: rgba(255,255,255,0.6);
+    border: 1.5px solid var(--lavender-200);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    outline: none;
+    resize: none;
+    margin-top: 15px;
+}

@@ -1,0 +1,244 @@
+/* open-when.html — envelopes and the letters inside them */
+
+.page-hint { text-align: center; color: var(--plum-soft); font-size: 0.9rem; margin: -10px 0 22px; }
+
+/* Envelope grid */
+.envelope-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (min-width: 640px) { .envelope-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 900px) { .envelope-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.envelope-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 150px;
+  padding: 26px 12px 18px;
+  text-align: center;
+  cursor: pointer;
+  background: #fffdf8;
+  border: 1px solid var(--lavender-100);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s var(--ease), transform 0.4s var(--ease), box-shadow 0.3s;
+}
+/* the envelope flap */
+.envelope-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 46px;
+  background: linear-gradient(160deg, var(--lavender-100), var(--rose-soft));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  opacity: 0.85;
+  transition: transform 0.4s var(--ease);
+  transform-origin: top;
+}
+.envelope-card.visible { opacity: 1; transform: none; }
+.envelope-card:active { transform: scale(0.97); }
+@media (hover: hover) {
+  .envelope-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+  .envelope-card:hover::before { transform: scaleY(-1); }
+}
+.envelope-card.opened .envelope-title::after { content: ' ✓'; color: var(--leaf); }
+
+.envelope-icon { position: relative; font-size: 2.4rem; line-height: 1; margin-top: 10px; }
+.envelope-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--plum);
+}
+.envelope-title::before { content: 'Open when '; display: block; font-family: var(--font-body); font-size: 0.66rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--purple); margin-bottom: 4px; }
+
+/* The letter pop-up */
+.modal-overlay { opacity: 0; transition: opacity 0.3s ease; }
+.modal-overlay.active { opacity: 1; }
+.modal-content {
+  max-width: 560px;
+  background: #fffdf8;
+  color: #444;
+  padding: 44px clamp(20px, 6vw, 40px) 32px;
+  overflow-x: hidden;
+  transform: scale(0.94);
+  transition: transform 0.4s var(--ease), box-shadow 0.5s ease, background 0.6s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lavender-300) transparent;
+}
+.modal-overlay.active .modal-content { transform: none; }
+.close-btn { z-index: 10; }
+
+.letter-text {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.75;
+}
+.letter-text h2 {
+  font-size: 1.7rem;
+  color: var(--purple-deep);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  margin: 0 0 18px;
+  line-height: 1.2;
+}
+.letter-text p { margin-bottom: 14px; }
+.letter-text button, .letter-text input, .letter-text label { font-family: var(--font-body); font-size: 1rem; }
+
+/* --- 6. UNIQUE INTERACTIVE FEATURES CSS --- */
+.feature-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 12px 25px;
+    background-color: var(--primary-purple);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
+    font-size: 1rem;
+    width: 80%;
+    max-width: 250px;
+}
+.feature-btn:hover { background-color: var(--purple-deep); transform: translateY(-3px); }
+
+/* 4-7-8 Breathing Animation */
+.breathe-circle {
+    width: 80px; height: 80px;
+    background: var(--lavender-100);
+    border-radius: 50%;
+    margin: 30px auto;
+    border: 2px solid var(--primary-purple);
+    box-shadow: 0 0 15px rgba(147, 51, 234, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--primary-purple);
+    font-weight: bold;
+    font-family: var(--font-body);
+    position: relative;
+}
+.breathe-circle::after {
+    content: '';
+    position: absolute;
+    top: -10px; left: -10px; right: -10px; bottom: -10px;
+    border: 1px dashed var(--primary-purple);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: rotateDash 10s linear infinite;
+}
+@keyframes rotateDash {
+    100% { transform: rotate(360deg); }
+}
+@keyframes breatheExercise {
+    0% { transform: scale(1); opacity: 0.5; }
+    21% { transform: scale(1.6); opacity: 1; } /* Inhale */
+    58% { transform: scale(1.6); opacity: 1; } /* Hold */
+    100% { transform: scale(1); opacity: 0.5; } /* Exhale */
+}
+
+/* Popping Bubbles */
+.bad-thought-bubble {
+    position: absolute;
+    background: linear-gradient(135deg, #4a044e, #701a75);
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: floatBubble 3s infinite ease-in-out alternate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+}
+@keyframes floatBubble {
+    0% { transform: translateY(0px) scale(1); }
+    100% { transform: translateY(-15px) scale(1.05); }
+}
+
+/* Rain Animation Container */
+#rain-container {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+    border-radius: 20px;
+}
+.raindrop {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: rgba(147, 51, 234, 0.4);
+    border-radius: 2px;
+    animation: dropFall linear infinite;
+}
+@keyframes dropFall {
+    0% { transform: translateY(-30px); opacity: 1; }
+    100% { transform: translateY(80vh); opacity: 0; }
+}
+
+.forgive-slider { width: 100%; margin: 20px 0; accent-color: var(--primary-purple); }
+
+.mini-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.mini-gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 2px solid #eee; }
+
+.interactive-box {
+    background: rgba(245, 208, 254, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 25px;
+    border: 1px dashed var(--primary-purple);
+    position: relative;
+    z-index: 2;
+}
+
+.choc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.choc-piece {
+    background: radial-gradient(circle at 30% 30%, #6d4c41, #3e2723);
+    color: #d7ccc8;
+    padding: 20px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.choc-piece:hover { background: radial-gradient(circle at 30% 30%, #5d4037, #21130d); transform: translateY(-3px); }
+.choc-revealed { background: rgba(245, 208, 254, 0.5); color: var(--primary-purple); border: 1px solid var(--primary-purple); box-shadow: none; font-size: 0.9rem; font-style: italic; }
+
+@media (max-width: 600px) {
+  .envelope-title { font-size: 1.1rem; }
+  .feature-btn { width: 100%; }
+  .mini-gallery img { height: 110px; }
+}

@@ -1,0 +1,137 @@
+/* gallery.html — polaroid wall, photo viewer, "view my heart" portrait */
+
+.gallery-actions { display: flex; justify-content: center; margin: -6px 0 26px; }
+
+/* Polaroid grid */
+.highlights-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (min-width: 600px) { .highlights-container { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; } }
+@media (min-width: 960px) { .highlights-container { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.polaroid {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 8px 8px 0;
+  border-radius: 6px;
+  box-shadow: 0 10px 24px -12px rgba(59, 10, 69, 0.35);
+  cursor: zoom-in;
+  opacity: 0;
+  transform: translateY(24px) rotate(var(--tilt, 0deg));
+  transition: opacity 0.6s var(--ease), transform 0.5s var(--ease), box-shadow 0.3s;
+}
+.polaroid:nth-child(3n+1) { --tilt: -1.4deg; }
+.polaroid:nth-child(3n+2) { --tilt: 1deg; }
+.polaroid:nth-child(3n)   { --tilt: -0.4deg; }
+.polaroid.visible { opacity: 1; transform: rotate(var(--tilt, 0deg)); }
+@media (hover: hover) {
+  .polaroid:hover { transform: rotate(0deg) translateY(-6px) scale(1.03); box-shadow: var(--shadow-lift); z-index: 2; }
+}
+
+.polaroid img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: var(--lavender-100);
+  border-radius: 2px;
+}
+.polaroid p {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 10px 4px 14px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  color: var(--plum);
+  text-align: center;
+}
+
+/* Full-screen photo viewer */
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 60px var(--gutter) 30px;
+  background: rgba(30, 6, 36, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.viewer.open { display: flex; animation: modal-in 0.3s var(--ease); }
+.viewer img {
+  max-width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.viewer__caption {
+  max-width: 520px;
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.35rem;
+  text-align: center;
+}
+.viewer__count { color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; letter-spacing: 0.15em; }
+.viewer__btn {
+  position: absolute;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.viewer__btn:hover { background: rgba(255, 255, 255, 0.28); }
+.viewer__close { top: max(14px, env(safe-area-inset-top)); right: 14px; }
+.viewer__prev { left: 10px; top: 50%; transform: translateY(-50%); }
+.viewer__next { right: 10px; top: 50%; transform: translateY(-50%); }
+@media (max-width: 600px) { .viewer__prev, .viewer__next { top: auto; bottom: 22px; transform: none; } }
+
+/* "View my heart" text portrait */
+#portrait-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 5, 5, 0.96);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.portrait-container {
+  width: 80vh;
+  height: 80vh;
+  overflow: hidden;
+  font-family: monospace;
+  line-height: 6px;
+  font-size: 6px;
+  word-break: break-all;
+  background: url(../../assets/images/baby.jpg) no-repeat center;
+  background-size: cover;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+@media (max-width: 600px) {
+  .portrait-container { width: 95vw; height: 95vw; line-height: 3px; font-size: 3px; }
+}
+.portrait-hint { color: rgba(255, 255, 255, 0.7); margin-top: 20px; font-style: italic; }
+#portrait-overlay .close-btn { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 16px; background: rgba(255, 255, 255, 0.14); color: #fff; }

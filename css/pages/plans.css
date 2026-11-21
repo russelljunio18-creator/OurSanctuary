@@ -1,0 +1,128 @@
+/* plans.html — bucket list, future home, date decider */
+
+:root {
+    /* CSS House Palette */
+    --house-siding: #d5cfc9; 
+    --house-roof: #8a8d91;   
+    --house-trim: #ffffff;   
+    --house-door: #87cefa;   
+    --house-brick: #b05e4a;  
+    --house-dark: #333;      
+    --window-glow: #ffdf73;  
+    --grass-green: #6b8e3a;  
+    --bush-green: #3d5e2a;
+}
+
+.card-lead { color: var(--plum-soft); font-size: 0.95rem; }
+
+/* --- Bucket list --- */
+.bucket-progress { font-size: 0.85rem; color: var(--plum-soft); margin: -8px 0 16px; }
+.bucket-list { list-style: none; padding: 0; margin: 0; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+.bucket-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  border: 1px solid var(--lavender-100);
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s var(--ease), opacity 0.3s;
+}
+.bucket-item:hover { transform: translateX(3px); }
+.bucket-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  margin: 0;
+  border: 2px solid var(--lavender-300);
+  border-radius: 8px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.bucket-item input[type="checkbox"]:checked { background: var(--purple); border-color: var(--purple); }
+.bucket-item input[type="checkbox"]:checked::after { content: '✓'; color: #fff; font-size: 0.8rem; font-weight: 800; }
+.bucket-item.completed { background: var(--lavender-50); opacity: 0.75; }
+.bucket-item.completed .bucket-text { text-decoration: line-through; text-decoration-color: var(--purple); color: var(--plum-soft); }
+.bucket-text { font-size: 1rem; line-height: 1.4; }
+
+/* --- Our future home (CSS drawing) --- */
+.css-house-scene {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+    margin: 20px 0;
+    border: 1px solid var(--lavender-100);
+    background: linear-gradient(to bottom, #87CEEB, #e0f6ff);
+}
+
+.night-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, #110e2c, #3b0764); opacity: 0; animation: dayNightCycle 20s infinite; z-index: 0; }
+.sun { position: absolute; top: 30px; left: 40px; width: 40px; height: 40px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 20px #FFD700; animation: sunMove 20s infinite; z-index: 1; }
+
+.house-wrapper { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); width: 260px; height: 160px; z-index: 5; }
+
+/* Mobile Scaling for House */
+@media (max-width: 400px) {
+    .css-house-scene { height: 220px; }
+    .house-wrapper { transform: translateX(-50%) scale(0.8); transform-origin: bottom center; }
+    .ground { height: 40px !important; }
+    .path { height: 40px !important; }
+}
+
+.chimney { position: absolute; right: 45px; bottom: 120px; width: 20px; height: 60px; background: var(--house-brick); border: 1px solid rgba(0,0,0,0.2); z-index: 1; }
+.main-roof { position: absolute; top: 20px; left: 0; width: 260px; height: 60px; background: var(--house-roof); clip-path: polygon(25% 0, 75% 0, 100% 100%, 0 100%); z-index: 2; border-bottom: 4px solid var(--house-trim); }
+.dormer { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); width: 80px; height: 45px; background: var(--house-siding); z-index: 3; border: 2px solid rgba(0,0,0,0.1); }
+.dormer-roof { position: absolute; top: -20px; left: -10px; width: 100px; height: 20px; background: var(--house-roof); clip-path: polygon(50% 0, 100% 100%, 0 100%); border-bottom: 2px solid var(--house-trim); }
+.dormer-win { position: absolute; bottom: 5px; width: 16px; height: 25px; background: var(--house-dark); border: 2px solid var(--house-trim); animation: lightsOn 20s infinite; }
+.dormer-win.left { left: 15px; } .dormer-win.right { right: 15px; }
+.house-body { position: absolute; bottom: 0; left: 15px; width: 230px; height: 80px; background: var(--house-siding); z-index: 3; display: flex; justify-content: center; align-items: flex-end; border-left: 1px solid rgba(0,0,0,0.1); border-right: 1px solid rgba(0,0,0,0.1); }
+.door { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 32px; height: 60px; background: var(--house-door); border: 3px solid var(--house-trim); border-bottom: none; }
+.main-win { position: absolute; bottom: 15px; width: 26px; height: 40px; background: var(--house-dark); border: 3px solid var(--house-trim); animation: lightsOn 20s infinite; }
+.main-win.w1 { left: 20px; } .main-win.w2 { left: 55px; } .main-win.w3 { right: 55px; } .main-win.w4 { right: 20px; }
+.porch-roof { position: absolute; bottom: 80px; left: -5px; width: 270px; height: 20px; background: var(--house-roof); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%); z-index: 6; border-bottom: 3px solid var(--house-trim); }
+.porch-base { position: absolute; bottom: 0; left: 10px; width: 240px; height: 10px; background: #e0e0e0; z-index: 6; }
+.column { position: absolute; bottom: 10px; width: 20px; height: 70px; z-index: 6; display: flex; flex-direction: column; align-items: center; }
+.col-top { width: 10px; height: 40px; background: var(--house-trim); }
+.col-base { width: 20px; height: 30px; background: var(--house-brick); }
+.col1 { left: 15px; } .col2 { left: 80px; } .col3 { right: 80px; } .col4 { right: 15px; }
+.stairs { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 50px; height: 15px; background: var(--house-brick); z-index: 7; border-top: 2px solid #fff; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2); }
+
+.ground { position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--grass-green); z-index: 4; }
+.path { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80px; height: 50px; background: #a3a3a3; clip-path: polygon(30% 0, 70% 0, 100% 100%, 0 100%); z-index: 5; }
+.bush { position: absolute; background: var(--bush-green); border-radius: 50%; z-index: 6; box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3); }
+.b1 { bottom: 30px; left: 10%; width: 60px; height: 50px; } .b2 { bottom: 40px; left: 25%; width: 45px; height: 40px; } .b3 { bottom: 35px; right: 15%; width: 70px; height: 60px; } .b4 { bottom: 45px; right: 30%; width: 40px; height: 35px; }
+
+.lamppost { position: absolute; bottom: 10px; right: 25%; width: 6px; height: 90px; background: #111; z-index: 8; }
+.lamp-head { position: absolute; top: -20px; left: -7px; width: 20px; height: 25px; background: rgba(255,255,255,0.4); clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%); border-bottom: 3px solid #111; animation: lightsOn 20s infinite; }
+.lamp-top { position: absolute; top: -30px; left: -7px; width: 20px; height: 10px; background: #111; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+
+@keyframes dayNightCycle { 0%, 20% { opacity: 0; } 40%, 60% { opacity: 0.85; } 80%, 100% { opacity: 0; } }
+@keyframes sunMove { 0% { transform: translate(0, 0); opacity: 1; } 25% { transform: translate(60px, 80px); opacity: 0; } 75% { transform: translate(-40px, 80px); opacity: 0; } 100% { transform: translate(0, 0); opacity: 1; } }
+@keyframes lightsOn { 0%, 25% { background: var(--house-dark); box-shadow: none; } 35%, 65% { background: var(--window-glow); box-shadow: 0 0 15px var(--window-glow); } 75%, 100% { background: var(--house-dark); box-shadow: none; } }
+
+/* --- Date decider --- */
+#decider-result {
+  margin-top: 22px;
+  min-height: 3.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  border: 1px dashed var(--lavender-300);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--purple-deep);
+  line-height: 1.3;
+}
+#decider-result.final { border-style: solid; border-color: var(--purple); animation: modal-in 0.4s var(--ease); }
