@@ -16,8 +16,8 @@
 <body data-page="vouchers">
 
 
-    <div class="container">
-        <header>
+    <main class="container">
+        <header class="page-hero">
             <h1>Love Vouchers</h1>
             <div class="subtitle">Redeemable anytime, anywhere my princess 🎟️</div>
         </header>
@@ -81,17 +81,17 @@
             </div>
 
         </div>
-    </div>
+    </main>
 
     <div class="modal-overlay" id="redeemModal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-btn" onclick="closeModal()">✖</span>
+            <button class="close-btn" onclick="closeModal()" aria-label="Close">✕</button>
             <h2>Voucher Redeemed 💜</h2>
             <p id="redeem-text">Text me right now to claim this my solace.</p>
         </div>
     </div>
 
-    <div id="tulip-garden" class="garden-container"></div>
+    <div id="tulip-garden" class="garden-container" aria-hidden="true"></div>
 
 </body>
 </html>

@@ -25,6 +25,10 @@ function redeemVoucher(btn, voucherName) {
     // Visual change to show it is used
     card.classList.add('redeemed');
     btn.innerText = "Claimed ✔";
+    const stamp = document.createElement('span');
+    stamp.className = 'voucher-stamp';
+    stamp.textContent = 'Claimed';
+    card.appendChild(stamp);
 
     // Update and show modal
     redeemText.innerText = `You just claimed the ${voucherName} voucher. Send me a message right now so I can give it to you my love.`;
@@ -36,3 +40,7 @@ function closeModal() {
     modal.classList.remove('active');
     setTimeout(() => { modal.style.display = 'none'; }, 300);
 }
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+});
