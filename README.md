@@ -39,7 +39,7 @@ assets/
 Some text lives in the page's script instead:
 - Open When letters: `js/pages/open-when.js` (the `letters` object)
 - Garden notes: `js/pages/garden.js`
-- Bouquet notes and photo caption: top of `js/pages/bouquet.js` (look for `TODO`)
+- Bouquet notes and photo caption: top of `js/pages/bouquet.js`
 - Home greetings and special-date messages: `js/pages/home.js`
 - Date ideas: `js/pages/plans.js`
 
@@ -60,4 +60,4 @@ It builds the home hub, every page's top bar and the "Next" link. A new page nee
 
 A few things are remembered in the browser on the device she uses
 (they don't sync between phone and laptop): dedicated songs, bucket-list ticks,
-and which Open When letters she has already opened.
+which Open When letters she has already opened, and the tulips she plants in the Garden.

@@ -7,14 +7,19 @@
      color: any CSS colour (these match the real bouquet).
 */
 
-const PHOTO_CAPTION = "TODO: write a line about the bouquet here";
+const PHOTO_CAPTION = "Tulips that will never wilt, just like what I feel for you lovey.";
 
 const TULIP_NOTES = [
-    { color: '#7c3aed', title: 'TODO: title for tulip 1', note: 'TODO: write your message here' },
-    { color: '#c4b5fd', title: 'TODO: title for tulip 2', note: 'TODO: write your message here' },
-    { color: '#dc2626', title: 'TODO: title for tulip 3', note: 'TODO: write your message here' },
-    { color: '#facc15', title: 'TODO: title for tulip 4', note: 'TODO: write your message here' },
-    { color: '#a855f7', title: 'TODO: title for tulip 5', note: 'TODO: write your message here' },
+    { color: '#7c3aed', title: 'Our color',
+      note: 'Purple has always been our color baby. It is all over this whole sanctuary because every time I see it, I think of you. Real flowers fade after a few days, but these tulips will stay exactly like this, and so will my love for you. I love you the most my princess.' },
+    { color: '#c4b5fd', title: 'My peace',
+      note: 'These soft ones remind me of how gentle you are with me, even on the days I do not deserve it. When college gets too loud and everything feels heavy, you are the quiet I run to. Thank you for always being so patient with me, my solace.' },
+    { color: '#dc2626', title: 'My whole heart',
+      note: 'Red is for everything I feel for you that I still cannot say properly out loud. From the letter I crumpled and threw away, to my nervous confession at the JS Prom, it was always you. My heart is completely and utterly yours sweetheart.' },
+    { color: '#facc15', title: 'My sunshine',
+      note: 'Yellow is for you, my pretty sunshine. You light up even my most tiring days without even trying. Whenever you feel like giving up on your schoolworks, look at this little tulip and remember that I am always so incredibly proud of you darling.' },
+    { color: '#a855f7', title: 'Forever',
+      note: 'I want us to be just like this bouquet, always together and never fading. Through graduation, through our future home, through growing old and still holding hands. Every single day, I choose you, and I will keep choosing you my precious.' },
 ];
 
 /* ---------- Nothing below needs editing ---------- */

@@ -1,143 +1,152 @@
-/* garden.html */
+/* garden.html — a full-screen garden that follows the real time of day */
 
-/* --- 1. DYNAMIC CSS VARIABLES FOR DAY AND NIGHT --- */
+/* ---------- Day & night colours ---------- */
 :root {
-    --primary-purple: #9333ea;
-    --glass: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    
-    /* House Base Palette */
-    --house-siding: #d5cfc9; 
-    --house-roof: #8a8d91;   
-    --house-trim: #ffffff;   
-    --house-door: #87cefa;   
-    --house-brick: #b05e4a;  
-}
+    --house-siding: #d5cfc9;
+    --house-roof: #8a8d91;
+    --house-trim: #ffffff;
+    --house-door: #87cefa;
+    --house-brick: #b05e4a;
 
-/* Default is Night Mode (Moonlight Garden) */
+    --lawn-h: 38vh;        /* height of the grass */
+    --house-scale: 1.3;
+}
+@media (max-width: 600px) { :root { --lawn-h: 40vh; --house-scale: 0.92; } }
+@media (max-height: 640px) { :root { --house-scale: 0.8; } }
+
+/* Night (default) */
 body {
-    --sky-top: #0a0b1a;
-    --sky-bottom: #1a1025;
-    --celestial-body: #fffafa;
-    --celestial-glow: #e9d5ff;
+    --sky-top: #0b0a1f;
+    --sky-mid: #231338;
+    --sky-bottom: #3a1d4f;
+    --celestial-body: #fdf8ff;
+    --celestial-glow: rgba(233, 213, 255, 0.55);
     --window-color: #ffdf73;
     --window-glow: #ffdf73;
-    --grass-top: #0f2b14;
-    --grass-bottom: #051408;
+    --grass-top: #183a22;
+    --grass-bottom: #071a0d;
     --path-top: #4a332a;
     --path-bottom: #2a1b16;
-    --text-color: #f5d0fe;
+    --text-color: #f3e8ff;
     --nav-text: #ffffff;
-    --tulip-glow-alpha: 0.6;
-    
-    background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
+    --tulip-glow-alpha: 0.55;
+    --ui-bg: rgba(20, 10, 35, 0.6);
+    --ui-border: rgba(255, 255, 255, 0.14);
+
+    background: linear-gradient(180deg, var(--sky-top), var(--sky-mid) 55%, var(--sky-bottom));
     color: var(--text-color);
-    font-family: var(--font-body);
-    margin: 0;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden; /* Prevents scrolling so it acts like an app */
+    overflow: hidden;              /* the garden is one screen, like an app */
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
     transition: background 2s ease, color 2s ease;
 }
+html { overflow: hidden; }
 
-/* Day Mode (Sunshine Garden) */
+/* Day */
 body.day-mode {
-    --sky-top: #6db3f2;
+    --sky-top: #7cc0f5;
+    --sky-mid: #bfe0fb;
     --sky-bottom: #f5d0fe;
-    --celestial-body: #ffdf73;
-    --celestial-glow: #ffffff;
-    --window-color: #87ceeb;
+    --celestial-body: #ffe48a;
+    --celestial-glow: rgba(255, 223, 115, 0.75);
+    --window-color: #aee3f7;
     --window-glow: transparent;
-    --grass-top: #4ade80;
-    --grass-bottom: #16a34a;
-    --path-top: #a07865;
-    --path-bottom: #735041;
-    --text-color: #4a044e;
-    --nav-text: #4a044e;
+    --grass-top: #5ccf7f;
+    --grass-bottom: #1f9d4a;
+    --path-top: #b08a74;
+    --path-bottom: #7c5a47;
+    --text-color: #3b0a45;
+    --nav-text: #3b0a45;
     --tulip-glow-alpha: 0;
+    --ui-bg: rgba(255, 255, 255, 0.72);
+    --ui-border: rgba(255, 255, 255, 0.9);
 }
 
-/* --- 2. RESPONSIVE NAVIGATION & HELPER TEXT --- */
-/* Top bar sits over the scene and follows day/night colours */
+/* ---------- Top bar over the scene ---------- */
 .topbar {
     position: fixed;
     left: 0; right: 0;
     width: 100%;
-    background: rgba(10, 11, 26, 0.35);
-    border-bottom-color: rgba(255, 255, 255, 0.12);
+    background: transparent;
+    border-bottom: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+.topbar__home {
     color: var(--nav-text);
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.topbar__home:hover { background: var(--ui-bg); filter: brightness(1.15); }
+.topbar__title { color: var(--nav-text); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.25); transition: color 2s ease; }
+body.day-mode .topbar__title { text-shadow: none; }
+
+/* ---------- Scene ---------- */
+.scene { position: fixed; inset: 0; }
+
+.sky-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60vmax 40vmax at 50% 18%, var(--celestial-glow), transparent 60%);
+    opacity: 0.35;
     transition: background 2s ease;
-}
-body.day-mode .topbar { background: rgba(255, 255, 255, 0.4); border-bottom-color: var(--line); }
-.topbar__home, .topbar__title { color: var(--nav-text); }
-.topbar__home:hover { background: rgba(255, 255, 255, 0.15); }
-
-.helper-text {
-    position: fixed;
-    top: 10vh;
-    width: 90%;
-    text-align: center;
-    color: var(--text-color);
-    opacity: 0.8;
-    font-size: 1rem;
-    font-style: italic;
-    z-index: 999;
     pointer-events: none;
-    transition: color 2s ease;
 }
 
-/* --- 3. CELESTIAL BODY (Moon or Sun) --- */
+#particles { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 25; }
+
+/* Breathing moon / sun */
 .celestial-container {
     position: absolute;
-    top: 15vh;
+    top: max(84px, 11vh);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 22px;
     pointer-events: none;
     z-index: 2;
 }
-
 .celestial-orb {
-    width: 120px;
-    height: 120px;
-    background: var(--celestial-body);
+    width: clamp(78px, 11vh, 110px);
+    aspect-ratio: 1;
     border-radius: 50%;
-    box-shadow: 0 0 40px var(--celestial-glow), inset 0 0 20px rgba(255,255,255,0.5);
-    animation: breatheOrb 8s infinite ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 15px;
+    background: radial-gradient(circle at 35% 35%, #fff, var(--celestial-body) 60%);
+    box-shadow: 0 0 40px 6px var(--celestial-glow), 0 0 120px 20px var(--celestial-glow);
     transition: background 2s ease, box-shadow 2s ease;
 }
-
-.orb-text {
-    color: #4a044e;
-    font-family: var(--font-display);
-    font-weight: bold;
-    font-size: 0.95rem;
-    opacity: 0.8;
-    transition: opacity 2s ease;
-    line-height: 1.2;
-}
-
+/* 4s in, 4s hold, 4s out — the words below follow the same rhythm */
+.celestial-orb.breathing { animation: breatheOrb 12s ease-in-out infinite; }
 @keyframes breatheOrb {
-    0%, 100% { transform: scale(1); filter: brightness(1); }
-    50% { transform: scale(1.2); filter: brightness(1.2); }
+    0%   { transform: scale(1); }
+    33%  { transform: scale(1.28); }
+    66%  { transform: scale(1.28); }
+    100% { transform: scale(1); }
 }
+.orb-text {
+    min-height: 1.4em;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--text-color);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
+    transition: opacity 0.8s ease, color 2s ease;
+    white-space: nowrap;
+}
+body.day-mode .orb-text { text-shadow: 0 1px 12px rgba(255, 255, 255, 0.8); }
 
-/* --- 4. FUTURE HOUSE --- */
+/* --- Our future house --- */
 .house-wrapper {
     position: absolute;
-    bottom: 35vh; 
+    bottom: calc(var(--lawn-h) - 2px);
     left: 50%;
-    transform: translateX(-50%) scale(1.4);
+    transform: translateX(-50%) scale(var(--house-scale));
     transform-origin: bottom center;
     width: 260px;
     height: 160px;
@@ -174,29 +183,27 @@ body.day-mode .topbar { background: rgba(255, 255, 255, 0.4); border-bottom-colo
 .col1 { left: 15px; } .col2 { left: 80px; } .col3 { right: 80px; } .col4 { right: 15px; }
 .stairs { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 50px; height: 15px; background: var(--house-brick); z-index: 7; border-top: 2px solid #fff; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2); }
 
-/* --- 5. GARDEN LANDSCAPE --- */
+/* ---------- Lawn ---------- */
 .garden-landscape {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 35vh;
+    left: 0; right: 0; bottom: 0;
+    height: var(--lawn-h);
     background: linear-gradient(to bottom, var(--grass-top), var(--grass-bottom));
     z-index: 10;
+    cursor: pointer;
     transition: background 2s ease;
+    outline: none;
 }
-
 .grass-texture {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-image: 
-        radial-gradient(ellipse at center, rgba(147, 51, 234, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at center, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-    background-size: 40px 40px, 30px 30px;
-    background-position: 0 0, 15px 15px;
+    inset: 0;
+    background-image:
+        radial-gradient(ellipse at center, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at center, rgba(0, 0, 0, 0.08) 0%, transparent 50%);
+    background-size: 40px 26px, 30px 20px;
+    background-position: 0 0, 15px 10px;
     pointer-events: none;
 }
-
 .garden-path {
     position: absolute;
     bottom: 0;
@@ -206,153 +213,181 @@ body.day-mode .topbar { background: rgba(255, 255, 255, 0.4); border-bottom-colo
     height: 100%;
     background: linear-gradient(to bottom, var(--path-top), var(--path-bottom));
     clip-path: polygon(35% 0, 65% 0, 100% 100%, 0 100%);
-    z-index: 11;
+    z-index: 1;
+    pointer-events: none;
     transition: background 2s ease;
 }
+.tulip-bed { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 
 .picket-fence {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: 0; left: 0;
     width: 100%;
-    height: 60px;
+    height: 54px;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="80" viewBox="0 0 40 80"><path fill="%23ffffff" opacity="0.95" d="M10 0 L30 0 L30 80 L10 80 Z M0 20 L40 20 L40 30 L0 30 Z M0 50 L40 50 L40 60 L0 60 Z"/></svg>');
+    background-size: 30px 60px;
     background-repeat: repeat-x;
     z-index: 30;
-    filter: drop-shadow(0 -5px 10px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 -4px 8px rgba(0, 0, 0, 0.25));
     pointer-events: none;
 }
 
-/* --- 6. TULIPS & FLOATING THOUGHTS --- */
-.planted-tulip {
+/* ---------- Tulips ---------- */
+.tulip-plant {
     position: absolute;
-    bottom: 0;
+    width: 50px;
+    height: 150px;
+    margin-left: -25px;
     transform-origin: bottom center;
-    animation: growTulip 1s ease-out forwards, gentleSway 4s ease-in-out infinite alternate;
-    z-index: 15;
-    pointer-events: none;
-    filter: drop-shadow(0 0 8px rgba(147, 51, 234, var(--tulip-glow-alpha)));
+}
+.tulip-plant svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform-origin: bottom center;
+    animation: gentleSway var(--sway, 4s) ease-in-out var(--delay, 0s) infinite alternate;
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, var(--tulip-glow-alpha)));
     transition: filter 2s ease;
 }
+.tulip-plant.new { animation: growTulip 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.tulip-plant.decor { opacity: 0.85; }
+@keyframes growTulip { from { transform: scale(0); opacity: 0; } to { transform: scale(var(--s, 1)); opacity: 1; } }
+@keyframes gentleSway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
 
-@keyframes growTulip {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+/* sparkle where she tapped */
+.sparkle {
+    position: absolute;
+    width: 6px; height: 6px;
+    margin: -3px 0 0 -3px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 10px 2px #e9d5ff;
+    pointer-events: none;
+    z-index: 40;
+    animation: sparkle 0.7s ease-out forwards;
 }
+@keyframes sparkle { to { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; } }
 
-@keyframes gentleSway {
-    0% { transform: rotate(-4deg); }
-    100% { transform: rotate(4deg); }
-}
-
+/* sweet thought that floats up from a new tulip */
+.thought-layer { position: absolute; inset: 0; pointer-events: none; z-index: 45; }
 .floating-thought {
     position: absolute;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: var(--text-color);
     font-family: var(--font-display);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-style: italic;
-    pointer-events: none;
+    font-weight: 600;
     white-space: nowrap;
-    text-shadow: 0 0 8px var(--primary-purple);
-    animation: floatUp 4s ease-in forwards;
-    z-index: 50;
-    transition: color 2s ease;
-}
-
-@keyframes floatUp {
-    0% { transform: translateY(0) scale(0.8); opacity: 0; }
-    20% { opacity: 1; transform: translateY(-20px) scale(1); }
-    80% { opacity: 1; }
-    100% { transform: translateY(-120px); opacity: 0; }
-}
-
-/* --- 7. PARTICLES (Fireflies / Sunlight motes) --- */
-#particles {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 25;
-}
-
-/* --- 8. BOUQUET AND MODAL --- */
-.bouquet-card {
-    position: absolute;
-    bottom: 12vh;
-    left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 15px 30px;
-    text-align: center;
-    z-index: 40;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    width: 80%;
-    max-width: 350px;
+    animation: floatUp 3.6s ease-out forwards;
+}
+@keyframes floatUp {
+    0%   { opacity: 0; translate: 0 10px; }
+    15%  { opacity: 1; translate: 0 0; }
+    75%  { opacity: 1; }
+    100% { opacity: 0; translate: 0 -90px; }
 }
 
-.bouquet-card p {
-    margin: 0 0 10px 0;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    font-style: italic;
-}
-
-.bouquet-flowers {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.bouquet-tulip {
-    font-size: 2.5rem;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.bouquet-tulip:hover {
-    transform: scale(1.2) translateY(-5px);
-    filter: drop-shadow(0 0 15px var(--primary-purple));
-}
-
-.modal-overlay { opacity: 0; transition: opacity 0.3s ease; }
-.modal-content { max-width: 420px; text-align: center; transform: scale(0.94); transition: transform 0.3s var(--ease); }
-.modal-overlay.active { opacity: 1; }
-.modal-overlay.active .modal-content { transform: none; }
-.modal-content h2 { font-family: var(--font-display); color: var(--purple-deep); margin-top: 0; padding-bottom: 10px; font-size: 1.7rem; }
-.modal-content p { font-family: var(--font-display); line-height: 1.6; font-size: 1.2rem; font-style: italic; margin-bottom: 0; }
-
-/* --- 9. MOBILE SPECIFIC SCALING --- */
-@media (max-width: 600px) {
-    .helper-text { font-size: 0.85rem; top: 12vh; }
-    .celestial-container { top: 18vh; }
-    .celestial-orb { width: 100px; height: 100px; padding: 10px; }
-    .orb-text { font-size: 0.85rem; }
-    .house-wrapper { transform: translateX(-50%) scale(0.9); bottom: 35vh; }
-    .bouquet-card { padding: 10px 15px; bottom: 10vh; width: 85%; }
-    .bouquet-tulip { font-size: 2.2rem; }
-}
-
-.bouquet-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-    padding: 6px 14px;
-    border-radius: var(--radius-pill);
+/* ---------- Hint ---------- */
+.helper-text {
+    position: fixed;
+    left: 50%;
+    bottom: calc(max(12px, env(safe-area-inset-bottom)) + 66px);
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: var(--text-color);
     font-size: 0.85rem;
-    font-weight: 700;
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.15);
-    transition: background 0.2s;
+    font-weight: 600;
+    text-align: center;
+    z-index: 50;
+    pointer-events: none;
+    animation: hintPulse 2.6s ease-in-out infinite;
+    transition: opacity 0.6s ease;
 }
-.bouquet-link:hover { background: rgba(255, 255, 255, 0.3); }
+.helper-text.hidden { opacity: 0; animation: none; }
+@keyframes hintPulse { 50% { transform: translateX(-50%) translateY(-4px); } }
 
-/* Keep the bouquet card readable over the flowers */
-.bouquet-card { background: rgba(20, 10, 35, 0.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-body.day-mode .bouquet-card { background: rgba(255, 255, 255, 0.7); }
+/* ---------- Bottom dock ---------- */
+.dock {
+    position: fixed;
+    left: 50%;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 999px;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+    color: var(--text-color);
+    transition: background 2s ease, color 2s ease;
+    max-width: calc(100% - 24px);
+}
+.dock__count {
+    padding: 0 12px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+.dock__notes {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 6px 0 12px;
+    border-left: 1px solid var(--ui-border);
+    border-right: 1px solid var(--ui-border);
+}
+.dock__label { font-size: 0.72rem; font-weight: 700; opacity: 0.8; margin-right: 4px; white-space: nowrap; }
+@media (max-width: 480px) { .dock__label { display: none; } .dock__count { padding: 0 8px 0 10px; } }
+.bouquet-tulip, .dock__btn {
+    width: 40px; height: 40px;
+    display: grid; place-items: center;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    font-size: 1.35rem;
+    cursor: pointer;
+    transition: transform 0.25s var(--ease), background 0.2s;
+}
+.bouquet-tulip:hover, .dock__btn:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-2px); }
+.bouquet-tulip.read { opacity: 0.55; }
 
-/* The scene is full-screen; never scroll sideways */
-html { overflow: hidden; }
+/* ---------- Note pop-up ---------- */
+.modal-overlay { opacity: 0; transition: opacity 0.3s ease; z-index: 9000; }
+.modal-overlay.active { opacity: 1; }
+.modal-content { max-width: 420px; text-align: center; background: #fffdf8; color: var(--plum); transform: scale(0.94); transition: transform 0.3s var(--ease); user-select: text; }
+.modal-overlay.active .modal-content { transform: none; }
+.modal-content h2 { color: var(--purple-deep); font-size: 1.7rem; }
+.modal-content p { font-family: var(--font-display); font-style: italic; font-size: 1.2rem; line-height: 1.6; margin: 0; }
+.note-link {
+    display: inline-block;
+    margin-top: 18px;
+    color: var(--purple);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.note-link:hover { text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+    .tulip-plant svg, .celestial-orb.breathing, .helper-text { animation: none; }
+}
