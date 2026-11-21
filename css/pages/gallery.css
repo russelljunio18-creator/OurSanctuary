@@ -1,253 +1,137 @@
-/* gallery.html */
+/* gallery.html — polaroid wall, photo viewer, "view my heart" portrait */
 
-/* --- 1. UNIFIED DREAMY PALETTE --- */
-:root {
-    --primary-purple: #9333ea;
-    --bg-top: #f5d0fe;
-    --bg-bottom: #701a75;
-    --text-main: #4a044e;
-    --glass: rgba(255, 255, 255, 0.25);
-    --glass-border: rgba(255, 255, 255, 0.4);
-}
+.gallery-actions { display: flex; justify-content: center; margin: -6px 0 26px; }
 
-body {
-    background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-    background-attachment: fixed;
-    color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden; 
-}
-
-/* --- 2. RESPONSIVE FLOATING NAVIGATION --- */
-nav {
-    position: sticky;
-    top: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    padding: 12px 30px;
-    border-radius: 50px;
-    margin-top: 20px;
-    z-index: 1000;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap; 
-    justify-content: center; 
-    width: 85%; 
-    max-width: 700px;
-}
-
-nav a {
-    text-decoration: none;
-    color: var(--text-main);
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    transition: color 0.3s ease;
-    white-space: nowrap;
-}
-
-nav a:hover { color: var(--primary-purple); }
-
-/* --- 3. LAYOUT --- */
-.container {
-    width: 90%;
-    max-width: 900px;
-    margin-top: 40px;
-    padding-bottom: 150px; 
-}
-
-header {
-    text-align: center;
-    margin-bottom: 40px;
-    animation: fadeIn 2s ease;
-}
-
-h1 {
-    font-size: 3rem;
-    margin: 0;
-    color: #581c87;
-    font-family: 'Georgia', serif;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    font-style: italic;
-    opacity: 0.8;
-    margin-top: 10px;
-}
-
-/* --- 4. GALLERY STYLES --- */
-.glass-card {
-    background: var(--glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    border-radius: 25px;
-    padding: 40px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    text-align: center;
-}
-
-/* MOBILE OPTIMIZED GALLERY GRID */
+/* Polaroid grid */
 .highlights-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
-    margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
+@media (min-width: 600px) { .highlights-container { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; } }
+@media (min-width: 960px) { .highlights-container { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .polaroid {
-    background: white;
-    padding: 10px 10px 30px 10px; 
-    box-shadow: 0 8px 15px rgba(0,0,0,0.08);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform: translateY(30px);
-    opacity: 0; 
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 8px 8px 0;
+  border-radius: 6px;
+  box-shadow: 0 10px 24px -12px rgba(59, 10, 69, 0.35);
+  cursor: zoom-in;
+  opacity: 0;
+  transform: translateY(24px) rotate(var(--tilt, 0deg));
+  transition: opacity 0.6s var(--ease), transform 0.5s var(--ease), box-shadow 0.3s;
 }
-
-.polaroid.visible {
-    opacity: 1;
-    transform: translateY(0) rotate(0deg);
-}
-
+.polaroid:nth-child(3n+1) { --tilt: -1.4deg; }
+.polaroid:nth-child(3n+2) { --tilt: 1deg; }
+.polaroid:nth-child(3n)   { --tilt: -0.4deg; }
+.polaroid.visible { opacity: 1; transform: rotate(var(--tilt, 0deg)); }
 @media (hover: hover) {
-    .polaroid:hover {
-        transform: scale(1.05) rotate(-2deg) translateY(-5px) !important;
-        box-shadow: 0 15px 30px rgba(147, 51, 234, 0.2);
-        z-index: 10;
-    }
+  .polaroid:hover { transform: rotate(0deg) translateY(-6px) scale(1.03); box-shadow: var(--shadow-lift); z-index: 2; }
 }
 
 .polaroid img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    background-color: #eee;
-    border: 1px solid #eee;
-    border-radius: 2px;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: var(--lavender-100);
+  border-radius: 2px;
 }
-
 .polaroid p {
-    margin-top: 15px;
-    font-family: 'Segoe UI', sans-serif; 
-    font-weight: 600;
-    color: #444;
-    font-size: 0.85rem;
-    line-height: 1.3;
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 10px 4px 14px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  color: var(--plum);
+  text-align: center;
 }
 
-/* LARGER SCREENS ADJUSTMENT */
-@media (min-width: 600px) {
-    .glass-card { padding: 40px; }
-    .highlights-container {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 25px;
-    }
-    .polaroid { padding: 15px 15px 40px 15px; }
-    .polaroid img { height: 250px; }
-    .polaroid p { font-size: 1rem; margin-top: 20px; }
-    h1 { font-size: 3rem; }
+/* Full-screen photo viewer */
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 60px var(--gutter) 30px;
+  background: rgba(30, 6, 36, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
-
-@media (max-width: 599px) {
-    .glass-card { padding: 25px 15px; }
-    h1 { font-size: 2.2rem; }
+.viewer.open { display: flex; animation: modal-in 0.3s var(--ease); }
+.viewer img {
+  max-width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
-
-/* --- 5. BUTTON & OVERLAY --- */
-.btn {
-    background: var(--text-main);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    font-size: 0.9rem;
+.viewer__caption {
+  max-width: 520px;
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.35rem;
+  text-align: center;
 }
-
-.btn:hover {
-    background: var(--primary-purple);
-    transform: translateY(-2px);
+.viewer__count { color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; letter-spacing: 0.15em; }
+.viewer__btn {
+  position: absolute;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
 }
+.viewer__btn:hover { background: rgba(255, 255, 255, 0.28); }
+.viewer__close { top: max(14px, env(safe-area-inset-top)); right: 14px; }
+.viewer__prev { left: 10px; top: 50%; transform: translateY(-50%); }
+.viewer__next { right: 10px; top: 50%; transform: translateY(-50%); }
+@media (max-width: 600px) { .viewer__prev, .viewer__next { top: auto; bottom: 22px; transform: none; } }
 
+/* "View my heart" text portrait */
 #portrait-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(5, 5, 5, 0.95);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 5, 5, 0.96);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-
 .portrait-container {
-    width: 80vh;
-    height: 80vh;
-    font-family: monospace;
-    line-height: 6px;
-    font-size: 6px;
-    word-break: break-all;
-    background: url(assets/images/baby.jpg) no-repeat center;
-    background-size: cover;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
+  width: 80vh;
+  height: 80vh;
+  overflow: hidden;
+  font-family: monospace;
+  line-height: 6px;
+  font-size: 6px;
+  word-break: break-all;
+  background: url(../../assets/images/baby.jpg) no-repeat center;
+  background-size: cover;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
 }
-
-/* MOBILE FIX FOR PORTRAIT OVERLAY */
 @media (max-width: 600px) {
-    .portrait-container {
-        width: 95vw; 
-        height: 95vw;
-        line-height: 3px; 
-        font-size: 3px;
-    }
+  .portrait-container { width: 95vw; height: 95vw; line-height: 3px; font-size: 3px; }
 }
-
-.close-btn {
-    position: absolute;
-    top: 20px;
-    right: 25px;
-    color: white;
-    font-size: 35px;
-    cursor: pointer;
-    transition: 0.3s;
-    z-index: 10001; 
-}
-
-.close-btn:hover { color: var(--primary-purple); }
-
-/* --- 6. GARDEN --- */
-.garden-container {
-    position: fixed;
-    bottom: 0; left: 0; width: 100%; height: 45vh;
-    z-index: -1; pointer-events: none;
-    display: flex; align-items: flex-end;
-}
-
-@keyframes sway {
-    0% { transform: rotate(-2deg); }
-    50% { transform: rotate(2deg); }
-    100% { transform: rotate(-2deg); }
-}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+.portrait-hint { color: rgba(255, 255, 255, 0.7); margin-top: 20px; font-style: italic; }
+#portrait-overlay .close-btn { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 16px; background: rgba(255, 255, 255, 0.14); color: #fff; }

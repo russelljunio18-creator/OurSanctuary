@@ -26,37 +26,56 @@ function closePortrait() {
     document.getElementById('portrait-overlay').style.display = 'none'; 
 }
 
-// --- 3. GARDEN GENERATION ---
-window.addEventListener('DOMContentLoaded', () => {
-    const garden = document.getElementById('tulip-garden');
-    const tulipCount = 35; 
-    const colors = ['#9333ea', '#701a75', '#d8b4fe', '#a855f7'];
+// --- 3. PHOTO VIEWER (tap a polaroid to see it big) ---
+const polaroids = Array.from(document.querySelectorAll('.polaroid'));
+let viewerIndex = 0;
 
-    for (let i = 0; i < tulipCount; i++) {
-        const tulip = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        const randomX = Math.random() * 100;
-        const randomHeight = 120 + Math.random() * 180;
-        const randomDelay = Math.random() * -5;
-        const randomSpeed = 4 + Math.random() * 2;
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+polaroids.forEach((photo, i) => {
+    const caption = photo.querySelector('p').textContent;
+    photo.querySelector('img').alt = caption;
+    photo.setAttribute('tabindex', '0');
+    photo.addEventListener('click', () => openViewer(i));
+    photo.addEventListener('keydown', e => { if (e.key === 'Enter') openViewer(i); });
+});
 
-        tulip.setAttribute("viewBox", "0 0 50 150");
-        tulip.style.cssText = `
-            position: absolute;
-            bottom: -20px;
-            left: ${randomX}%;
-            height: ${randomHeight}px;
-            z-index: ${Math.floor(randomHeight)};
-            transform-origin: bottom center;
-            animation: sway ${randomSpeed}s ease-in-out ${randomDelay}s infinite;
-            filter: drop-shadow(0 0 8px rgba(0,0,0,0.1));
-        `;
+function showViewerPhoto() {
+    const photo = polaroids[viewerIndex];
+    document.getElementById('viewer-img').src = photo.querySelector('img').src;
+    document.getElementById('viewer-img').alt = photo.querySelector('p').textContent;
+    document.getElementById('viewer-caption').textContent = photo.querySelector('p').textContent;
+    document.getElementById('viewer-count').textContent = (viewerIndex + 1) + ' / ' + polaroids.length;
+}
 
-        tulip.innerHTML = `
-            <path d="M25 150 Q25 100 25 50" stroke="#4ade80" stroke-width="3" fill="none" />
-            <path d="M25 120 Q40 100 25 80" fill="#22c55e" opacity="0.6" />
-            <path d="M25 10 C10 10 5 40 25 65 C45 40 40 10 25 10 Z" fill="${randomColor}" />
-        `;
-        garden.appendChild(tulip);
-    }
+function openViewer(i) {
+    viewerIndex = i;
+    showViewerPhoto();
+    document.getElementById('viewer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeViewer() {
+    document.getElementById('viewer').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function stepViewer(dir) {
+    viewerIndex = (viewerIndex + dir + polaroids.length) % polaroids.length;
+    showViewerPhoto();
+}
+
+document.addEventListener('keydown', e => {
+    if (!document.getElementById('viewer').classList.contains('open')) return;
+    if (e.key === 'Escape') closeViewer();
+    if (e.key === 'ArrowRight') stepViewer(1);
+    if (e.key === 'ArrowLeft') stepViewer(-1);
+});
+
+// Swipe left/right on phones
+let touchStartX = null;
+document.getElementById('viewer').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+document.getElementById('viewer').addEventListener('touchend', e => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) stepViewer(dx < 0 ? 1 : -1);
+    touchStartX = null;
 });
