@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FlashDeck">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" id="touchIcon">
+<link rel="icon" id="favIcon">
+<title>FlashDeck</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1d1b24;--muted:#6b6876;--line:#e4e1ea;--accent:#4f46e5;--accent-ink:#fff;
+  --green:#d7f5df;--green-ink:#0f6b33;--danger:#c2263b;--blank:#4f46e5;--shadow:0 1px 3px rgba(0,0,0,.08)}
+@media (prefers-color-scheme:dark){:root{--bg:#121117;--card:#1c1b23;--ink:#ecebf2;--muted:#9a97a8;--line:#2d2b37;
+  --accent:#8b85ff;--accent-ink:#121117;--green:#153a23;--green-ink:#7be3a0;--danger:#ff6b7f;--blank:#8b85ff;--shadow:none}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;align-items:center;gap:8px;
+  padding:calc(env(safe-area-inset-top) + 8px) 16px 8px;border-bottom:1px solid var(--line)}
+header h1{flex:1;margin:0;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+main{padding:16px 16px calc(96px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;background:var(--card);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;min-height:56px;border:0;background:none;color:var(--muted);font-size:12px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px}
+nav button span{font-size:20px;line-height:1}
+nav button.on{color:var(--accent);font-weight:600}
+button,select,input,textarea{font:inherit;color:inherit}
+.btn{min-height:44px;min-width:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);cursor:pointer}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.danger{color:var(--danger)}
+.btn.icon{padding:0;font-size:20px;border:0;background:none}
+.btn:disabled{opacity:.45}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1}
+.stack>*+*{margin-top:12px}
+input[type=text],input[type=search],select,textarea{width:100%;min-height:44px;padding:10px 12px;border-radius:12px;
+  border:1px solid var(--line);background:var(--card)}
+textarea{resize:vertical;min-height:96px;line-height:1.4}
+label.f{display:block;font-size:13px;color:var(--muted);margin:12px 0 4px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.deck{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);
+  border-left:8px solid var(--c);margin-bottom:10px;min-height:64px;cursor:pointer;box-shadow:var(--shadow)}
+.deck .name{font-weight:600;font-size:17px}
+.muted{color:var(--muted);font-size:14px}
+.empty{text-align:center;color:var(--muted);padding:40px 16px}
+.empty b{display:block;font-size:40px;margin-bottom:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.card .meta{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);margin-bottom:6px;flex-wrap:wrap}
+.tag{background:var(--line);border-radius:999px;padding:2px 8px;font-size:12px}
+.md p{margin:.2em 0}.md ol,.md ul{margin:.3em 0;padding-left:1.5em}
+.hw{background:var(--green);color:var(--green-ink);border-radius:4px;padding:0 3px}
+.blank{color:var(--blank);font-weight:700;letter-spacing:1px}
+.toolbar{display:flex;gap:6px;margin-top:6px}
+.toolbar .btn{flex:1}
+h2{font-size:17px;margin:20px 0 10px}
+.study-card{min-height:280px;display:flex;flex-direction:column;justify-content:center;font-size:19px;cursor:pointer;
+  padding:22px;border-radius:20px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.study-card .back{border-top:1px dashed var(--line);margin-top:16px;padding-top:16px}
+.hint{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:4px 0 14px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.grades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.grades .btn{min-height:56px;font-weight:600}
+.g-again{color:var(--danger)}.g-easy{color:var(--green-ink)}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.swatch{width:44px;height:44px;border-radius:50%;border:3px solid transparent;background:var(--c);cursor:pointer}
+.swatch.on{border-color:var(--ink)}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:640px;border-radius:20px 20px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;
+  border-radius:12px;z-index:30;font-size:14px}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stat div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:24px}
+.warn{color:var(--danger);font-size:14px}
+</style>
+</head>
+<body>
+<header><button class="btn icon" id="backBtn" aria-label="Back" hidden>‹</button><h1 id="title">FlashDeck</h1><span id="headRight"></span></header>
+<main id="view"></main>
+<nav id="nav">
+  <button data-go="decks"><span>▤</span>Decks</button>
+  <button data-go="search"><span>⌕</span>Search</button>
+  <button data-go="import"><span>⇩</span>Paste</button>
+  <button data-go="backup"><span>⛁</span>Backup</button>
+</nav>
+<script>
+'use strict';
+/* ========== Storage ========== */
+const KEY = 'flashdeck.v1';
+const COLORS = ['#4f46e5','#0ea5e9','#10b981','#84cc16','#f59e0b','#f97316','#ef4444','#ec4899','#a855f7','#64748b'];
+const DAY = 86400000;
+let db = load();
+
+function load() {
+  try { const d = JSON.parse(localStorage.getItem(KEY)); if (d && d.decks && d.cards) return d; } catch (e) {}
+  return { decks: [], cards: [] };
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); }
+  catch (e) { toast('Could not save: storage is full'); }
+}
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const deckById = id => db.decks.find(d => d.id === id);
+const cardsOf = id => db.cards.filter(c => c.deckId === id);
+const isDue = c => !c.dueAt || c.dueAt <= Date.now();
+
+/* ========== Helpers ========== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2200);
+}
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+
+/* ========== Markdown-lite rendering ==========
+   Supports **bold**, "1. " numbered lists and "- " / "* " / "• " bullet lists.
+   mode: 'list' = bold highlighted green, 'hide' = bold shown as blanks, 'plain' = normal bold */
+function renderMD(text, mode) {
+  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, (_, w) =>
+    mode === 'hide' ? '<span class="blank">_____</span>' : mode === 'list' ? `<b class="hw">${w}</b>` : `<b>${w}</b>`);
+  let html = '', list = null;
+  const close = () => { if (list) { html += `</${list}>`; list = null; } };
+  for (const raw of String(text || '').split('\n')) {
+    const line = raw.trim();
+    let m;
+    if (!line) continue;                                   // blank lines never break a list
+    if ((m = line.match(/^\d+[.)]\s+(.*)$/))) {
+      if (list !== 'ol') { close(); html += '<ol>'; list = 'ol'; }
+      html += `<li>${inline(m[1])}</li>`;
+    } else if ((m = line.match(/^[-*•]\s+(.*)$/))) {
+      if (list !== 'ul') { close(); html += '<ul>'; list = 'ul'; }
+      html += `<li>${inline(m[1])}</li>`;
+    } else { close(); html += `<p>${inline(line)}</p>`; }
+  }
+  close();
+  return `<div class="md">${html}</div>`;
+}
+const countHidden = t => (String(t || '').match(/\*\*(.+?)\*\*/g) || []).length;
+
+/* ========== Paste parser (PARSER-START) ==========
+   Returns { cards:[{type,front,back,tag}], skipped:[lines] } in pasted order. */
+function parsePaste(text) {
+  const LABEL = /^(\*\*)?\s*([A-Z]{1,3}(?:-[A-Z]{1,3})?\d+)\.\s*(\(reverse\))?\s*/i;
+  const LIST = /^(\d+[.)]|[-*•])\s+/;
+  const cards = [], skipped = [];
+  let tag = '', cur = null, blankBefore = false;
+
+  const finish = () => {
+    if (!cur) return;
+    const tidy = arr => arr.join('\n').replace(/\n{2,}/g, '\n').trim();
+    if (cur.reverse) {
+      const front = tidy(cur.front), back = tidy(cur.back);
+      if (front || back) cards.push({ type: 'reverse', front, back, tag });
+    } else {
+      const front = tidy(cur.lines);
+      if (front) cards.push({ type: 'cloze', front, back: '', tag });
+    }
+    cur = null;
+  };
+  const isHeading = line => {
+    const t = line.replace(/\*\*/g, '').trim();
+    return /[A-Z]/.test(t) && !/[a-z]/.test(t) && !LIST.test(t) && !/^(front|back)\s*:/i.test(t);
+  };
+
+  for (const raw of String(text).replace(/\r/g, '').split('\n')) {
+    const line = raw.trim();
+    if (!line) { blankBefore = true; continue; }
+    const m = line.match(LABEL);
+    if (m) {                                             // new card label: **A1.** / A1. / **PB-A3.**
+      finish();
+      let rest = line.slice(m[0].length);
+      if (m[1]) rest = rest.replace(/^\*\*\s*/, '');      // drop the label's closing **
+      cur = m[3] ? { reverse: true, front: [], back: [], field: null } : { lines: rest ? [rest] : [] };
+      if (m[3] && rest) cur.front.push(rest);
+    } else if (cur && cur.reverse && /^front\s*:/i.test(line)) {
+      cur.field = 'front'; cur.front.push(line.replace(/^front\s*:\s*/i, ''));
+    } else if (cur && cur.reverse && /^back\s*:/i.test(line)) {
+      cur.field = 'back'; cur.back.push(line.replace(/^back\s*:\s*/i, ''));
+    } else if (cur && LIST.test(line)) {                 // list items stay in the same card
+      (cur.reverse ? cur[cur.field || 'front'] : cur.lines).push(line);
+    } else if (isHeading(line)) {                        // ALL-CAPS line = section tag
+      finish(); tag = line.replace(/\*\*/g, '').trim();
+    } else if (cur && !blankBefore) {                    // wrapped text continues the card
+      (cur.reverse ? cur[cur.field || 'front'] : cur.lines).push(line);
+    } else {                                             // stray prose after a blank line
+      finish(); skipped.push(line);
+    }
+    blankBefore = false;
+  }
+  finish();
+  return { cards, skipped };
+}
+/* (PARSER-END) */
+
+/* ========== Navigation ========== */
+let route = { name: 'decks' };
+function go(name, params = {}) { route = { name, ...params }; render(); window.scrollTo(0, 0); }
+$('#nav').addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(b.dataset.go); });
+$('#backBtn').addEventListener('click', () => route.back ? go(...route.back) : go('decks'));
+
+function setHeader(title, back, right = '') {
+  $('#title').textContent = title;
+  $('#backBtn').hidden = !back;
+  $('#headRight').innerHTML = right;
+  document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === route.name));
+  $('#nav').hidden = route.name === 'study';
+}
+function render() {
+  const v = $('#view');
+  ({ decks: viewDecks, deck: viewDeck, study: viewStudy, import: viewImport, search: viewSearch, backup: viewBackup }[route.name] || viewDecks)(v);
+}
+
+/* ========== Deck sheet (create / rename / recolor) ========== */
+function deckSheet(deck) {
+  let color = deck ? deck.color : COLORS[db.decks.length % COLORS.length];
+  const bg = document.createElement('div'); bg.className = 'sheet-bg';
+  bg.innerHTML = `<div class="sheet stack">
+    <h2 style="margin:0">${deck ? 'Edit deck' : 'New deck'}</h2>
+    <input type="text" id="dName" placeholder="Deck name" value="${deck ? esc(deck.name) : ''}">
+    <div class="swatches">${COLORS.map(c => `<button class="swatch" style="--c:${c}" data-c="${c}" aria-label="Color ${c}"></button>`).join('')}</div>
+    <div class="row"><button class="btn grow" id="dCancel">Cancel</button><button class="btn pri grow" id="dSave">Save</button></div></div>`;
+  document.body.appendChild(bg);
+  const paint = () => bg.querySelectorAll('.swatch').forEach(s => s.classList.toggle('on', s.dataset.c === color));
+  paint();
+  bg.querySelector('.swatches').onclick = e => { const s = e.target.closest('.swatch'); if (s) { color = s.dataset.c; paint(); } };
+  bg.querySelector('#dCancel').onclick = () => bg.remove();
+  bg.onclick = e => { if (e.target === bg) bg.remove(); };
+  bg.querySelector('#dSave').onclick = () => {
+    const name = bg.querySelector('#dName').value.trim();
+    if (!name) return toast('Give the deck a name');
+    if (deck) Object.assign(deck, { name, color });
+    else db.decks.push({ id: uid(), name, color, createdAt: Date.now() });
+    save(); bg.remove(); render();
+  };
+  if (!deck) setTimeout(() => bg.querySelector('#dName').focus(), 50);
+}
+function deleteDeck(deck) {
+  const n = cardsOf(deck.id).length;
+  if (!confirm(`Delete "${deck.name}" and its ${plural(n, 'card')}? This cannot be undone.`)) return;
+  db.decks = db.decks.filter(d => d.id !== deck.id);
+  db.cards = db.cards.filter(c => c.deckId !== deck.id);
+  save(); go('decks');
+}
+
+/* ========== Decks screen ========== */
+function viewDecks(v) {
+  setHeader('FlashDeck', false, `<button class="btn pri" id="newDeck">+ Deck</button>`);
+  $('#newDeck').onclick = () => deckSheet();
+  if (!db.decks.length) {
+    v.innerHTML = `<div class="empty"><b>🗂️</b>No decks yet.<br>Create one with <b style="display:inline;font-size:inherit">+ Deck</b>, or paste notes in the Paste tab.</div>`;
+    return;
+  }
+  v.innerHTML = db.decks.map(d => {
+    const cs = cardsOf(d.id), due = cs.filter(isDue).length;
+    return `<div class="deck" style="--c:${d.color}" data-id="${d.id}">
+      <div class="grow"><div class="name">${esc(d.name)}</div><div class="muted">${plural(cs.length, 'card')} · ${due} due</div></div>
+      <span class="muted" aria-hidden="true">›</span></div>`;
+  }).join('');
+  v.onclick = e => { const r = e.target.closest('.deck'); if (r) go('deck', { id: r.dataset.id }); };
+}
+
+/* ========== Deck screen: editor + card list ========== */
+let sortNewest = false;
+function sortedCards(deckId) {
+  // Batch time first, then the order inside the batch, so pasted cards keep their pasted order.
+  return cardsOf(deckId).sort((a, b) => sortNewest ? (b.createdAt - a.createdAt) || (a.seq - b.seq)
+                                                  : (a.createdAt - b.createdAt) || (a.seq - b.seq));
+}
+function viewDeck(v) {
+  const deck = deckById(route.id);
+  if (!deck) return go('decks');
+  v.onclick = null;
+  setHeader(deck.name, true, `<button class="btn icon" id="deckMenu" aria-label="Deck options">⋯</button>`);
+  const cards = sortedCards(deck.id), due = cards.filter(isDue).length;
+  const editing = route.edit ? db.cards.find(c => c.id === route.edit) : null;
+  v.innerHTML = `
+    <div class="panel stack">
+      <div class="row"><button class="btn pri grow" data-study="order" ${cards.length ? '' : 'disabled'}>Study in order</button>
+        <button class="btn grow" data-study="shuffle" ${cards.length ? '' : 'disabled'}>Shuffle</button></div>
+      <button class="btn" style="width:100%" data-study="due" ${due ? '' : 'disabled'}>Study due cards (${due})</button>
+    </div>
+    <h2 id="editorTop">${editing ? 'Edit card' : 'Add a card'}</h2>
+    <div class="panel">
+      <label class="f" for="cType" style="margin-top:0">Type</label>
+      <select id="cType"><option value="qa">Q&amp;A</option><option value="cloze">Cloze</option><option value="reverse">Reverse</option></select>
+      <label class="f" for="cFront" id="frontLbl">Question</label>
+      <textarea id="cFront"></textarea>
+      <div class="toolbar"><button class="btn" data-fmt="bold"><b>B</b></button><button class="btn" data-fmt="ul">• List</button><button class="btn" data-fmt="ol">1. List</button></div>
+      <label class="f" for="cBack" id="backLbl">Answer</label>
+      <textarea id="cBack"></textarea>
+      <div class="row" style="margin-top:12px">${editing ? '<button class="btn grow" id="cCancel">Cancel</button>' : ''}<button class="btn pri grow" id="cSave">Save</button></div>
+    </div>
+    <div class="row" style="margin-top:20px"><h2 class="grow" style="margin:0">Cards (${cards.length})</h2>
+      <button class="btn" id="sortBtn">${sortNewest ? 'Newest first' : 'Oldest first'}</button></div>
+    <div id="cardList" style="margin-top:10px">${cards.length ? cards.map(c => cardHTML(c)).join('')
+      : '<div class="empty"><b>✍️</b>No cards in this deck yet.</div>'}</div>`;
+
+  const type = $('#cType'), front = $('#cFront'), back = $('#cBack');
+  let lastBox = front;
+  [front, back].forEach(t => t.addEventListener('focus', () => lastBox = t));
+  const labels = () => {
+    const t = type.value;
+    $('#frontLbl').textContent = t === 'reverse' ? 'Front (description)' : t === 'cloze' ? 'Text (bold = hidden word)' : 'Question';
+    $('#backLbl').textContent = t === 'reverse' ? 'Back (answer term)' : t === 'cloze' ? 'Extra note (optional)' : 'Answer';
+  };
+  if (editing) { type.value = editing.type; front.value = editing.front; back.value = editing.back || ''; }
+  else type.value = localStorage.getItem('flashdeck.lastType') || 'qa';
+  labels();
+  type.onchange = labels;
+  v.querySelector('.toolbar').onclick = e => { const b = e.target.closest('[data-fmt]'); if (b) formatText(lastBox, b.dataset.fmt); };
+  $('#cSave').onclick = () => saveCard(deck, editing, type.value, front.value, back.value);
+  if (editing) { $('#cCancel').onclick = () => go('deck', { id: deck.id }); setTimeout(() => $('#editorTop').scrollIntoView(), 0); }
+  $('#sortBtn').onclick = () => { sortNewest = !sortNewest; render(); };
+  v.querySelectorAll('[data-study]').forEach(b => b.onclick = () => startStudy(deck.id, b.dataset.study));
+  $('#cardList').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const card = db.cards.find(c => c.id === b.dataset.id);
+    if (b.dataset.act === 'edit') go('deck', { id: deck.id, edit: card.id });
+    if (b.dataset.act === 'del' && confirm('Delete this card?')) { db.cards = db.cards.filter(c => c !== card); save(); render(); }
+  };
+  $('#deckMenu').onclick = () => deckMenu(deck);
+}
+function deckMenu(deck) {
+  const bg = document.createElement('div'); bg.className = 'sheet-bg';
+  bg.innerHTML = `<div class="sheet stack"><button class="btn" style="width:100%" id="mEdit">Rename / recolor</button>
+    <button class="btn danger" style="width:100%" id="mDel">Delete deck</button>
+    <button class="btn" style="width:100%" id="mClose">Close</button></div>`;
+  document.body.appendChild(bg);
+  bg.onclick = e => { if (e.target === bg || e.target.id === 'mClose') bg.remove(); };
+  bg.querySelector('#mEdit').onclick = () => { bg.remove(); deckSheet(deck); };
+  bg.querySelector('#mDel').onclick = () => { bg.remove(); deleteDeck(deck); };
+}
+function cardHTML(c, showDeck, noActions) {
+  const mode = c.type === 'cloze' ? 'list' : 'plain';
+  const label = { qa: 'Q&A', cloze: 'Cloze', reverse: 'Reverse' }[c.type];
+  const deck = showDeck ? deckById(c.deckId) : null;
+  return `<div class="card"><div class="meta"><span class="tag">${label}</span>${c.tag ? `<span class="tag">${esc(c.tag)}</span>` : ''}
+      ${deck ? `<span style="color:${deck.color}">● ${esc(deck.name)}</span>` : ''}</div>
+    ${renderMD(c.front, mode)}${c.back ? `<div class="muted" style="margin-top:6px">→</div>${renderMD(c.back, mode)}` : ''}
+    ${noActions ? '' : `<div class="row" style="justify-content:flex-end;margin-top:6px">
+      <button class="btn" data-act="edit" data-id="${c.id}">Edit</button><button class="btn danger" data-act="del" data-id="${c.id}">Delete</button></div>`}</div>`;
+}
+function saveCard(deck, editing, type, front, back) {
+  front = front.trim(); back = back.trim();
+  if (!front) return toast('The first field is empty');
+  if (type === 'cloze' && !countHidden(front)) return toast('Bold at least one word to hide it');
+  if (type !== 'cloze' && !back) return toast('Add an answer');
+  if (editing) Object.assign(editing, { type, front, back });
+  else db.cards.push(newCard(deck.id, { type, front, back, tag: '' }, Date.now(), 0));
+  localStorage.setItem('flashdeck.lastType', type);
+  save(); toast(editing ? 'Card updated' : 'Card added'); go('deck', { id: deck.id });
+}
+function newCard(deckId, c, createdAt, seq) {
+  return { id: uid(), deckId, type: c.type, front: c.front, back: c.back || '', tag: c.tag || '', createdAt, seq, dueAt: 0, interval: 0 };
+}
+
+/* Toolbar: wrap selection in **bold**, or prefix the selected lines with list markers. */
+function formatText(box, fmt) {
+  const { selectionStart: s, selectionEnd: e, value } = box;
+  if (fmt === 'bold') {
+    const sel = value.slice(s, e) || 'word';
+    box.value = value.slice(0, s) + '**' + sel + '**' + value.slice(e);
+    box.setSelectionRange(s + 2, s + 2 + sel.length);
+  } else {
+    const ls = value.lastIndexOf('\n', s - 1) + 1;
+    const le = value.indexOf('\n', e) === -1 ? value.length : value.indexOf('\n', e);
+    const lines = value.slice(ls, le).split('\n').map(l => l.replace(/^(\d+[.)]|[-*•])\s+/, ''));
+    const out = lines.map((l, i) => (fmt === 'ol' ? (i + 1) + '. ' : '- ') + l).join('\n');
+    box.value = value.slice(0, ls) + out + value.slice(le);
+    box.setSelectionRange(ls + out.length, ls + out.length);
+  }
+  box.focus();
+}
+
+/* ========== Study mode ========== */
+let session = null;
+function startStudy(deckId, mode) {
+  let cards = sortedCards(deckId);
+  if (mode === 'due') cards = cards.filter(isDue);
+  if (mode === 'shuffle') shuffle(cards);
+  if (!cards.length) return toast('No cards to study');
+  session = { deckId, queue: cards.map(c => c.id), total: cards.length, done: 0, again: 0, good: 0, easy: 0, revealed: false, start: Date.now() };
+  go('study', { back: ['deck', { id: deckId }] });
+}
+function viewStudy(v) {
+  if (!session) return go('decks');
+  const deck = deckById(session.deckId);
+  setHeader(deck ? deck.name : 'Study', false, `<button class="btn" id="exitBtn">Exit</button>`);
+  $('#exitBtn').onclick = () => { if (session.done === 0 || confirm('End this session?')) { session.queue = []; render(); } };
+  v.onclick = null;
+  if (!session.queue.length) return studySummary(v);
+  const card = db.cards.find(c => c.id === session.queue[0]);
+  if (!card) { session.queue.shift(); return render(); }
+  const r = session.revealed, pct = Math.round(session.done / session.total * 100);
+  let body;
+  if (card.type === 'cloze') body = renderMD(card.front, r ? 'list' : 'hide') + (r && card.back ? `<div class="back">${renderMD(card.back, 'plain')}</div>` : '');
+  else body = renderMD(card.front, 'plain') + (r ? `<div class="back">${renderMD(card.back, 'plain')}</div>` : '');
+  v.innerHTML = `<div class="muted">${session.done} / ${session.total} done${card.tag ? ' · ' + esc(card.tag) : ''}</div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="study-card" id="sCard">${body}</div>
+    ${r ? `<div class="grades"><button class="btn g-again" data-g="again">Again</button><button class="btn" data-g="good">Good</button><button class="btn g-easy" data-g="easy">Easy</button></div>`
+        : `<div class="hint">Tap the card to reveal</div>`}`;
+  $('#sCard').onclick = () => { if (!session.revealed) { session.revealed = true; render(); } };
+  v.querySelectorAll('[data-g]').forEach(b => b.onclick = () => grade(card, b.dataset.g));
+}
+/* Spaced repetition: Again = see it again this session; Good = 1 day, then double; Easy = 3 days, then double. */
+function grade(card, g) {
+  session.queue.shift(); session.revealed = false; session[g]++;
+  if (g === 'again') {
+    card.interval = 0; card.dueAt = 0;
+    session.queue.splice(Math.min(3, session.queue.length), 0, card.id);   // comes back a few cards later
+  } else {
+    card.interval = g === 'good' ? (card.interval ? card.interval * 2 : 1) : (card.interval ? Math.max(card.interval * 2, 3) : 3);
+    card.dueAt = Date.now() + card.interval * DAY;
+    session.done++;
+  }
+  save(); render();
+}
+function studySummary(v) {
+  const mins = Math.max(1, Math.round((Date.now() - session.start) / 60000)), id = session.deckId;
+  v.innerHTML = `<div class="empty"><b>🎉</b>Session finished: ${plural(session.done, 'card')} in about ${plural(mins, 'minute')}.</div>
+    <div class="stat"><div><b>${session.again}</b>Again</div><div><b>${session.good}</b>Good</div><div><b>${session.easy}</b>Easy</div></div>
+    <button class="btn pri" style="width:100%;margin-top:16px" id="doneBtn">Back to deck</button>`;
+  $('#doneBtn').onclick = () => { session = null; go('deck', { id }); };
+}
+
+/* ========== Bulk import from pasted text ========== */
+let pending = null;
+function viewImport(v) {
+  setHeader('Paste cards', false);
+  v.onclick = null;
+  const opts = db.decks.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('') + '<option value="__new">+ New deck…</option>';
+  v.innerHTML = `<div class="stack">
+    <p class="muted" style="margin:0">Paste notes with labels like <b>**A1.**</b> or <b>**PB-A3.**</b>. Bold words become hidden words.
+      <b>**A6. (reverse)**</b> with <b>Front:</b> / <b>Back:</b> lines makes a reverse card. An ALL-CAPS line becomes a section tag.</p>
+    <textarea id="pasteBox" style="min-height:240px" placeholder="**A1.** Paste here…">${esc(localStorage.getItem('flashdeck.draft') || '')}</textarea>
+    <div class="row"><button class="btn grow" id="clearPaste">Clear</button><button class="btn pri grow" id="previewBtn">Import</button></div>
+    <div id="preview"></div></div>`;
+  $('#pasteBox').oninput = e => localStorage.setItem('flashdeck.draft', e.target.value);
+  $('#clearPaste').onclick = () => { localStorage.removeItem('flashdeck.draft'); pending = null; render(); };
+  $('#previewBtn').onclick = () => {
+    pending = parsePaste($('#pasteBox').value);
+    const p = $('#preview'), cs = pending.cards;
+    if (!cs.length) { p.innerHTML = '<div class="empty"><b>🤔</b>No cards found. Each card must start with a label like <b style="display:inline;font-size:inherit">A1.</b></div>'; return; }
+    const noHidden = cs.filter(c => c.type === 'cloze' && !countHidden(c.front)).length;
+    const tags = [...new Set(cs.map(c => c.tag).filter(Boolean))];
+    p.innerHTML = `<div class="panel stack">
+      <div><b>${plural(cs.length, 'card')} found</b> · ${cs.filter(c => c.type === 'reverse').length} reverse · ${plural(tags.length, 'section')}</div>
+      ${noHidden ? `<div class="warn">${plural(noHidden, 'card')} ha${noHidden === 1 ? 's' : 've'} no **bold** words, so nothing will be hidden on ${noHidden === 1 ? 'it' : 'them'}.</div>` : ''}
+      ${pending.skipped.length ? `<div class="muted">${plural(pending.skipped.length, 'line')} outside any card skipped.</div>` : ''}
+      <label class="f" for="targetDeck">Save to deck</label><select id="targetDeck">${opts}</select>
+      <button class="btn pri" style="width:100%" id="confirmImport">Save ${plural(cs.length, 'card')}</button></div>
+      <h2>First ${Math.min(5, cs.length)}</h2>${cs.slice(0, 5).map(c => cardHTML(c, false, true)).join('')}`;
+    $('#confirmImport').onclick = confirmImport;
+  };
+}
+function confirmImport() {
+  let deckId = $('#targetDeck').value;
+  if (deckId === '__new') {
+    const name = (prompt('Name for the new deck') || '').trim();
+    if (!name) return;
+    deckId = uid(); db.decks.push({ id: deckId, name, color: COLORS[db.decks.length % COLORS.length], createdAt: Date.now() });
+  }
+  const now = Date.now();
+  pending.cards.forEach((c, i) => db.cards.push(newCard(deckId, c, now, i)));   // seq keeps the pasted order
+  save(); toast(`Imported ${plural(pending.cards.length, 'card')}`);
+  pending = null; localStorage.removeItem('flashdeck.draft');
+  go('deck', { id: deckId });
+}
+
+/* ========== Search ========== */
+let searchQ = '';
+function viewSearch(v) {
+  setHeader('Search', false);
+  v.innerHTML = `<input type="search" id="q" placeholder="Search all cards" value="${esc(searchQ)}"><div id="results" style="margin-top:12px"></div>`;
+  const run = () => {
+    searchQ = $('#q').value;
+    const q = searchQ.trim().toLowerCase(), out = $('#results');
+    if (!q) { out.innerHTML = `<div class="empty"><b>⌕</b>Type to search ${plural(db.cards.length, 'card')}.</div>`; return; }
+    const hits = db.cards.filter(c => (c.front + ' ' + c.back + ' ' + c.tag).replace(/\*\*/g, '').toLowerCase().includes(q));
+    out.innerHTML = hits.length ? `<div class="muted" style="margin-bottom:8px">${hits.length} match${hits.length === 1 ? '' : 'es'}</div>` + hits.slice(0, 100).map(c => cardHTML(c, true)).join('')
+      : '<div class="empty"><b>∅</b>No matches.</div>';
+  };
+  $('#q').oninput = run; run();
+  v.onclick = e => {
+    const b = e.target.closest('button[data-act]'); if (!b) return;
+    const card = db.cards.find(c => c.id === b.dataset.id);
+    if (b.dataset.act === 'edit') go('deck', { id: card.deckId, edit: card.id });
+    if (b.dataset.act === 'del' && confirm('Delete this card?')) { db.cards = db.cards.filter(c => c !== card); save(); run(); }
+  };
+}
+
+/* ========== Backup: JSON export / import ========== */
+function viewBackup(v) {
+  setHeader('Backup', false);
+  v.onclick = null;
+  v.innerHTML = `<div class="panel stack">
+    <div>${plural(db.decks.length, 'deck')}, ${plural(db.cards.length, 'card')}. Everything is stored only on this device.</div>
+    <button class="btn pri" style="width:100%" id="exportBtn">Export JSON</button>
+    <button class="btn" style="width:100%" id="copyBtn">Copy JSON to clipboard</button>
+    <button class="btn" style="width:100%" id="importBtn">Import JSON file</button>
+    <input type="file" id="fileIn" accept=".json,application/json" hidden>
+    <p class="muted" style="margin:0">Import adds decks and cards from the file. Items that already exist (same ID) are updated, not duplicated.</p></div>`;
+  const json = () => JSON.stringify({ app: 'FlashDeck', version: 1, exportedAt: new Date().toISOString(), ...db }, null, 1);
+  $('#exportBtn').onclick = () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([json()], { type: 'application/json' }));
+    a.download = `flashdeck-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  $('#copyBtn').onclick = () => navigator.clipboard.writeText(json()).then(() => toast('Copied'), () => toast('Copy failed'));
+  $('#importBtn').onclick = () => $('#fileIn').click();
+  $('#fileIn').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const d = JSON.parse(await f.text());
+      if (!Array.isArray(d.decks) || !Array.isArray(d.cards)) throw new Error();
+      if (!confirm(`Import ${plural(d.decks.length, 'deck')} and ${plural(d.cards.length, 'card')}?`)) return;
+      const merge = (list, items) => items.forEach(it => { const i = list.findIndex(x => x.id === it.id); i < 0 ? list.push(it) : (list[i] = it); });
+      merge(db.decks, d.decks); merge(db.cards, d.cards.map(c => ({ seq: 0, dueAt: 0, interval: 0, ...c })));
+      save(); toast('Import done'); go('decks');
+    } catch (err) { toast('That file is not a FlashDeck backup'); }
+  };
+}
+
+/* ========== App icon (drawn at runtime, so no image files are needed) ========== */
+function makeIcon() {
+  const c = document.createElement('canvas'); c.width = c.height = 180;
+  const x = c.getContext('2d');
+  x.fillStyle = '#4f46e5'; x.fillRect(0, 0, 180, 180);
+  x.fillStyle = '#a5b4fc'; x.save(); x.translate(90, 92); x.rotate(-0.18); x.fillRect(-52, -38, 104, 72); x.restore();
+  x.fillStyle = '#fff'; x.fillRect(38, 62, 104, 72);
+  x.fillStyle = '#4f46e5'; x.font = 'bold 44px system-ui,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('F', 90, 100);
+  const url = c.toDataURL('image/png');
+  $('#touchIcon').href = url; $('#favIcon').href = url;
+}
+
+makeIcon();
+render();
+</script>
+</body>
+</html>
